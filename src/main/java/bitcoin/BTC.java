@@ -6,7 +6,7 @@ import ecc.Curve;
 import ecc.Point;
 import ecc.Generator;
 
-class BTC{
+public class BTC{
   public static String toHex(String arg) {
     return String.format("%040x", new BigInteger(1, arg.getBytes(Charset.forName("UTF-8"))));
   }
