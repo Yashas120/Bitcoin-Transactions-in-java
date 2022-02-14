@@ -1,4 +1,7 @@
-import crypto.Sha;
+package bitcoin;
+
+import hashing.Sha;
+
 public class App {
 
     public static void main(String[] args) throws Exception {

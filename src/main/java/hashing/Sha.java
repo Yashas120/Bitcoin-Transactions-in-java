@@ -1,9 +1,11 @@
+package hashing;
 /* Follows the FIPS PUB 180-4 description for calculating SHA-256 hash function
 https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf*/
 
 import java.lang.Math;
 import java.nio.*;
 import java.util.Arrays;
+
 class shaFunctions{
     private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
     protected static long maxSize = (long)Math.pow(2,32); 
