@@ -85,6 +85,22 @@ public class HashTest{
         }
     }
 
+    @Test
+    public void test_double_hash_sha256(){
+        Sha hash = new Sha();
+        String actual = hash.sha256(hash.sha256("6f0339838caab76d143780e3b36372e67f12c25c2a3e0ca9b826fa4b0b5b6da2da81"));
+        
+        String expected = "69f29bda1591a192a332b6956ab02d8bf71b422bfd856c08deb64345221144ea";
+        String description = "double hash test";
+        try{
+            assertEquals(expected, actual);
+            System.out.println(description + " - \033[92mpassed\033[0m");
+        }catch(AssertionError e){
+            System.out.println(description + " - \033[91mfailed\033[0m");
+          throw e;
+        }
+    }
+
 
     // public void test_ripemd160(){
     //     String str="a";
