@@ -90,7 +90,7 @@ public class HashTest{
         Sha hash = new Sha();
         String actual = hash.sha256(hash.sha256("6f0339838caab76d143780e3b36372e67f12c25c2a3e0ca9b826fa4b0b5b6da2da81"));
         
-        String expected = "69f29bda1591a192a332b6956ab02d8bf71b422bfd856c08deb64345221144ea";
+        String expected = "89c815f76fae6e7598cbf1c835787949abb6f4c61802c56a1ef18d3f1d632598";
         String description = "double hash test";
         try{
             assertEquals(expected, actual);

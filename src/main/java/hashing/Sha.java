@@ -50,8 +50,8 @@ class shaFunctions{
         return ByteBuffer.wrap(conv).getLong();
     }   
 
-    protected byte[] intToBytes(int num){
-        return  ByteBuffer.allocate(4).putInt(num).array();
+    protected byte[] longToBytes(long num){
+        return  Arrays.copyOfRange(ByteBuffer.allocate(8).putLong(num).array(), 4, 8);
     }
 
     protected String bytesToHex(byte[] bytes) {
@@ -64,13 +64,13 @@ class shaFunctions{
         return new String(hexChars);
     }
 
-    protected byte[] pad(String str){
+    protected byte[] pad(byte[] arr){
         // Follows Section 5.1: Padding the message 
-        int len =  (int)Math.ceil((str.length()+1)/ 64.0) * 64;
+        int len =  (int)Math.ceil((arr.length+1)/ 64.0) * 64;
         byte[] b = new byte[len];
         int j = 0;
         long l = 0;
-        for(byte i : str.getBytes()){
+        for(byte i : arr){
             b[j++] = i;
             l++;
         }
@@ -155,10 +155,10 @@ class shaConstants extends shaFunctions{
 public class Sha extends shaConstants{
     private long[] _K = super.genK();
     private long[] _H = super.genH();
-    public String sha256(String str){
+    public byte[][] sha256(byte[] arr){
         long []K = Arrays.copyOf(_K , _K.length);
         long []H = Arrays.copyOf(_H , _H.length);
-        byte []byte_arr = super.pad(str);
+        byte []byte_arr = super.pad(arr);
         // System.out.println(super.bytesToHex(byte_arr));
         for (int block = 0; block < byte_arr.length/64; block++){
 
@@ -181,7 +181,7 @@ public class Sha extends shaConstants{
                 t2 = super.bytesToLong(W[t-7]);
                 t3 = super.sigmoid0(super.bytesToLong(W[t-15]));
                 t4 = super.bytesToLong(W[t-16]);
-                total = super.intToBytes((int)((t1 + t2 + t3 + t4) % maxSize));
+                total = super.longToBytes((long)((t1 + t2 + t3 + t4) % maxSize));
                 W[t][0] = total[0];
                 W[t][1] = total[1];
                 W[t][2] = total[2];
@@ -210,9 +210,9 @@ public class Sha extends shaConstants{
 
             }
         }
-        String ret = "";
+        byte[][] ret = new byte[8][4];
         for (int i = 0; i < 8; i++){
-            ret += super.bytesToHex(super.intToBytes((int)H[i]));
+            ret[i] = super.longToBytes((long)H[i]);
         }
         return ret;
     }
