@@ -155,7 +155,7 @@ class shaConstants extends shaFunctions{
 public class Sha extends shaConstants{
     private long[] _K = super.genK();
     private long[] _H = super.genH();
-    public byte[][] sha256(byte[] arr){
+    public byte[] sha256(byte[] arr){
         long []K = Arrays.copyOf(_K , _K.length);
         long []H = Arrays.copyOf(_H , _H.length);
         byte []byte_arr = super.pad(arr);
@@ -204,17 +204,35 @@ public class Sha extends shaConstants{
                 delta[0] = (T1 + T2) % maxSize;
             }
             // 4. Compute the i-th intermediate hash value H^i
-
-            for (int i = 0; i < 8; i++){
-                H[i] = (H[i] + delta[i]) % maxSize;
-
-            }
+            H[0] = (H[0] + delta[0]) % maxSize;
+            H[1] = (H[1] + delta[1]) % maxSize;
+            H[2] = (H[2] + delta[2]) % maxSize;
+            H[3] = (H[3] + delta[3]) % maxSize;
+            H[4] = (H[4] + delta[4]) % maxSize;
+            H[5] = (H[5] + delta[5]) % maxSize;
+            H[6] = (H[6] + delta[6]) % maxSize;
+            H[7] = (H[7] + delta[7]) % maxSize;
         }
         byte[][] ret = new byte[8][4];
-        for (int i = 0; i < 8; i++){
-            ret[i] = super.longToBytes((long)H[i]);
-        }
-        return ret;
+        ret[0] = super.longToBytes((long)H[0]);
+        ret[1] = super.longToBytes((long)H[1]);
+        ret[2] = super.longToBytes((long)H[2]);
+        ret[3] = super.longToBytes((long)H[3]);
+        ret[4] = super.longToBytes((long)H[4]);
+        ret[5] = super.longToBytes((long)H[5]);
+        ret[6] = super.longToBytes((long)H[6]);
+        ret[7] = super.longToBytes((long)H[7]);
+
+        byte hash[] = new byte[32];
+        hash[0] = ret[0][0]; hash[1] = ret[0][1]; hash[2] = ret[0][2]; hash[3] = ret[0][3];
+        hash[4] = ret[1][0]; hash[5] = ret[1][1]; hash[6] = ret[1][2]; hash[7] = ret[1][3];
+        hash[8] = ret[2][0]; hash[9] = ret[2][1]; hash[10] = ret[2][2]; hash[11] = ret[2][3];
+        hash[12] = ret[3][0]; hash[13] = ret[3][1]; hash[14] = ret[3][2]; hash[15] = ret[3][3];
+        hash[16] = ret[4][0]; hash[17] = ret[4][1]; hash[18] = ret[4][2]; hash[19] = ret[4][3];
+        hash[20] = ret[5][0]; hash[21] = ret[5][1]; hash[22] = ret[5][2]; hash[23] = ret[5][3];
+        hash[24] = ret[6][0]; hash[25] = ret[6][1]; hash[26] = ret[6][2]; hash[27] = ret[6][3];
+        hash[28] = ret[7][0]; hash[29] = ret[7][1]; hash[30] = ret[7][2]; hash[31] = ret[7][3];
+        return hash;
     }
 
 }

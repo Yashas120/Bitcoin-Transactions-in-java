@@ -5,6 +5,7 @@ import java.nio.charset.Charset;
 import ecc.Curve;
 import ecc.Point;
 import ecc.Generator;
+import ecc.PublicKey;
 
 public class BTC{
   public static String toHex(String arg) {
@@ -93,6 +94,16 @@ public class BTC{
     System.out.println("Public Key : \nx : "+publicKey.x+"\ny : "+publicKey.y);
     System.out.println("Public Key generated is on curve : \033[92m" + publicKey.verify_on_curve()+"\033[0m");
     System.out.println("Time : "+duration/1000000+" ms");
+    System.out.println("-------------------------------------------------------------------");
+
+    startTime = System.nanoTime();
+    String pk = PublicKey.toPublicKey(publicKey).address("test", true);
+    endTime = System.nanoTime();
+    duration = (endTime - startTime);
+    
+    System.out.println("\nPublic Key : "+pk);
+    System.out.println("Length of Public Key : "+pk.length());
+    System.out.println("Time Taken to Generate : "+duration/1000000+" ms");
     System.out.println("-------------------------------------------------------------------");
   }
 }
