@@ -93,7 +93,7 @@ class shaConstants extends shaFunctions{
         for(int i = 2; count < n; i++){
             flag = 1;
             for(int j = 2; j*j <= i; j++){
-                if (i % j == 0){
+                if ((((i % j) + j) % j) == 0){
                     flag = 0;
                     break;
                 }
@@ -181,7 +181,7 @@ public class Sha extends shaConstants{
                 t2 = super.bytesToLong(W[t-7]);
                 t3 = super.sigmoid0(super.bytesToLong(W[t-15]));
                 t4 = super.bytesToLong(W[t-16]);
-                total = super.longToBytes((long)((t1 + t2 + t3 + t4) % maxSize));
+                total = super.longToBytes((long)(((((t1 + t2 + t3 + t4) % maxSize) + maxSize) % maxSize)));
                 W[t][0] = total[0];
                 W[t][1] = total[1];
                 W[t][2] = total[2];
@@ -192,26 +192,26 @@ public class Sha extends shaConstants{
             long T1 = 0, T2 = 0;
             long []delta = Arrays.copyOf(H, H.length);
             for(int t = 0; t < 64; t++){
-                T1 = (delta[7] + capitalSigmoid1(delta[4]) + ch(delta[4], delta[5], delta[6]) + K[t] + bytesToLong(W[t])) % maxSize;
-                T2 = (capitalSigmoid0(delta[0]) + maj(delta[0], delta[1], delta[2])) % maxSize;
+                T1 = ((((delta[7] + capitalSigmoid1(delta[4]) + ch(delta[4], delta[5], delta[6]) + K[t] + bytesToLong(W[t])) % maxSize) + maxSize) % maxSize);
+                T2 = ((((capitalSigmoid0(delta[0]) + maj(delta[0], delta[1], delta[2])) % maxSize) + maxSize) % maxSize);
                 delta[7] = delta[6];
                 delta[6] = delta[5];
                 delta[5] = delta[4];
-                delta[4] = (delta[3] + T1) % maxSize;
+                delta[4] = ((((delta[3] + T1) % maxSize) + maxSize) % maxSize);
                 delta[3] = delta[2];
                 delta[2] = delta[1];
                 delta[1] = delta[0];
-                delta[0] = (T1 + T2) % maxSize;
+                delta[0] = ((((T1 + T2) % maxSize) + maxSize) % maxSize);
             }
             // 4. Compute the i-th intermediate hash value H^i
-            H[0] = (H[0] + delta[0]) % maxSize;
-            H[1] = (H[1] + delta[1]) % maxSize;
-            H[2] = (H[2] + delta[2]) % maxSize;
-            H[3] = (H[3] + delta[3]) % maxSize;
-            H[4] = (H[4] + delta[4]) % maxSize;
-            H[5] = (H[5] + delta[5]) % maxSize;
-            H[6] = (H[6] + delta[6]) % maxSize;
-            H[7] = (H[7] + delta[7]) % maxSize;
+            H[0] = ((((H[0] + delta[0]) % maxSize) + maxSize) % maxSize);
+            H[1] = ((((H[1] + delta[1]) % maxSize) + maxSize) % maxSize);
+            H[2] = ((((H[2] + delta[2]) % maxSize) + maxSize) % maxSize);
+            H[3] = ((((H[3] + delta[3]) % maxSize) + maxSize) % maxSize);
+            H[4] = ((((H[4] + delta[4]) % maxSize) + maxSize) % maxSize);
+            H[5] = ((((H[5] + delta[5]) % maxSize) + maxSize) % maxSize);
+            H[6] = ((((H[6] + delta[6]) % maxSize) + maxSize) % maxSize);
+            H[7] = ((((H[7] + delta[7]) % maxSize) + maxSize) % maxSize);
         }
         byte[][] ret = new byte[8][4];
         ret[0] = super.longToBytes((long)H[0]);

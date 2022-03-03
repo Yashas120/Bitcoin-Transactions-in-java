@@ -25,6 +25,10 @@ To execute the bitcoin code, execute the following command in terminal
 java -jar target/bitcoin-0.1.0.jar
 ```
 
+## Java problems
+Fix for unsigned int -> long
+beyond that use BigInteger
+Modulo operator in java doesnt work for negetive numbers replace n % m by (((n % m) + m) % m) 
 ## References
 
 [Maven Guide](https://spring.io/guides/gs/maven/)
