@@ -1,5 +1,6 @@
 package ecc;
 
+import hashing.Ripemd160;
 import hashing.Sha;
 // import hashing.Ripemd160;
 import java.math.BigInteger;
@@ -108,6 +109,10 @@ public class PublicKey extends Point{
       }
     }
     if(hash160){
+      Sha sha = new Sha();
+      pbk = sha.sha256(pbk);
+      Ripemd160 rip = new Ripemd160();
+      pbk = rip.RMD(pbk);
       return pbk;
     }
     else{
@@ -153,7 +158,7 @@ public class PublicKey extends Point{
   }
 
   public String address(String net, Boolean compressed){
-    byte[] pbk_hash = encode(compressed, false); // make true when ripemd is implemented
+    byte[] pbk_hash = encode(compressed, true); // make true when ripemd is implemented
 
     byte version = (byte)0x6f;
     

@@ -84,8 +84,9 @@ public class BTC{
     System.out.println("Time : "+duration/1000000+" ms");
     System.out.println("-------------------------------------------------------------------");
 
-    String secretKey_string = "OOAD-Project-Bitcoin";
+    String secretKey_string = "Andrej is cool :P";
     BigInteger secretKey = new BigInteger(toHex(secretKey_string),16);
+    System.out.println("secret key int : "+secretKey);
     startTime = System.nanoTime();
     Point publicKey = G.multiply(secretKey);
     endTime = System.nanoTime();

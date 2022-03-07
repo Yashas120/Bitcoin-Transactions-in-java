@@ -655,7 +655,8 @@ class transforms {
 
 public class Ripemd160 extends transforms{
     private byte[] Padding = new byte[64];
-    Ripemd160(){
+    
+    public Ripemd160(){
         Padding[0] = (byte)0x80;
     }
     
@@ -713,7 +714,7 @@ public class Ripemd160 extends transforms{
         }
         return ret;
     }
-    byte[] RMD(byte arr[]){
+    public byte[] RMD(byte arr[]){
         return(RMDFinal(RMDUpdate(new RMDContext(), arr, arr.length)));
     }
 }

@@ -1,6 +1,9 @@
 package hashing;
 
 import static org.junit.Assert.assertEquals;
+
+import java.nio.charset.StandardCharsets;
+
 import org.junit.Test;
 
 public class HashTest{
@@ -113,7 +116,7 @@ public class HashTest{
         }
     }
 
-
+    // @Test
     public void test_ripemd160(){
         String str="a";
         for(int i=0;i<1000;i++){
@@ -125,8 +128,24 @@ public class HashTest{
         Ripemd160 ripemd160 = new Ripemd160();
 
         for(int b=0; b<test.length;b++){
-            String yolo = String.format("%02x", 0xff & ripemd160(test[b].getBytes(StandardCharsets.US_ASCII)));
+            String yolo = String.format("%02x", 0xff & ripemd160.RMD(test[b].getBytes(StandardCharsets.US_ASCII)));
             assert yolo == res[b];
+        }
+    }
+
+    @Test
+    public void testRipemd160(){
+        Ripemd160 ripemd160 = new Ripemd160();
+        String expected = "f51960af7dd4813a587ab26388ddab3b28d1f7b4";
+        byte[] actual_bytes = ripemd160.RMD("hello this is a test".getBytes());
+        String actual = bytesToHex(actual_bytes);
+        String description = "Ripemd160 test";
+        try{
+            assertEquals(expected, actual);
+            System.out.println(description + " - \033[92mpassed\033[0m");
+        }catch(AssertionError e){
+            System.out.println(description + " - \033[91mfailed\033[0m");
+          throw e;
         }
     }
 }
