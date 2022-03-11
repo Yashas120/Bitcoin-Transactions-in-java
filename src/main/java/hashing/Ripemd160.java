@@ -104,7 +104,6 @@ class transforms {
                 break;
             case 4:
                 a = ROL(sj, ((((a + F4(b, c, d) + X[rj] + Kj) % 0x100000000L)) + 0x100000000L) % 0x100000000L) + e;
-                
                 break;
         }
         c = ROL(10, c);
@@ -642,11 +641,12 @@ class transforms {
         b = temp[0];
         d = temp[1];
         /* 79 */
+        System.out.println(a + " " + b + " "+ c + " " + d + " " + e);
 
         long t = ((((state[1] + cc + d) % 0x100000000L)) + 0x100000000L) % 0x100000000L;
         state[1] = ((((state[2] + dd + e) % 0x100000000L)) + 0x100000000L) % 0x100000000L;
-        state[2] = ((((state[3] + ee + e) % 0x100000000L)) + 0x100000000L) % 0x100000000L;
-        state[3] = ((((state[4] + aa + e) % 0x100000000L)) + 0x100000000L) % 0x100000000L;
+        state[2] = ((((state[3] + ee + a) % 0x100000000L)) + 0x100000000L) % 0x100000000L;
+        state[3] = ((((state[4] + aa + b) % 0x100000000L)) + 0x100000000L) % 0x100000000L;
         state[4] = ((((state[0] + bb + c) % 0x100000000L)) + 0x100000000L) % 0x100000000L;
         state[0] = (((t % 0x100000000L)) + 0x100000000L) % 0x100000000L;
         return state;

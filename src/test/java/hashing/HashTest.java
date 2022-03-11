@@ -137,11 +137,12 @@ public class HashTest{
     public void testRipemd160(){
         Ripemd160 ripemd160 = new Ripemd160();
         String expected = "f51960af7dd4813a587ab26388ddab3b28d1f7b4";
-        byte[] actual_bytes = ripemd160.RMD("hello this is a test".getBytes());
+        byte[] actual_bytes = ripemd160.RMD(new byte[]{'h' , 'e', 'l', 'l', 'o', ' ', 't' , 'h' , 'i' , 's', ' ',  'i', 's', ' ', 'a', ' ', 't', 'e' ,'s','t'});
         String actual = bytesToHex(actual_bytes);
         String description = "Ripemd160 test";
         try{
             assertEquals(expected, actual);
+            System.out.println("hello this is a test".getBytes());
             System.out.println(description + " - \033[92mpassed\033[0m");
         }catch(AssertionError e){
             System.out.println(description + " - \033[91mfailed\033[0m");
