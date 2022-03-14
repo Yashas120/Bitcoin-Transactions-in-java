@@ -2,7 +2,6 @@ package ecc;
 
 import hashing.Ripemd160;
 import hashing.Sha;
-// import hashing.Ripemd160;
 import java.math.BigInteger;
 
 public class PublicKey extends Point{  
@@ -40,8 +39,13 @@ public class PublicKey extends Point{
       BigInteger zero = new BigInteger("0");
       
       byte prefix = this.y.mod(temp).equals(zero) ? (byte)0x02 : (byte)0x03;
-      byte []xBytes = this.x.toByteArray();
+      byte []xBytes_temp = this.x.toByteArray();
+      byte []xBytes = new byte[xBytes_temp.length-1];
       
+      for(int i=1; i<xBytes_temp.length; i++){
+        xBytes[i-1] = xBytes_temp[i];
+      }
+
       pbk = new byte[xBytes.length + 1];
       pbk[0] = prefix;
       int i = 1; 
@@ -62,7 +66,6 @@ public class PublicKey extends Point{
         pbk[i] = xBytes[i-1];
         i++;
       }
-
     }
     else{
       byte []xBytes = this.x.toByteArray();
@@ -159,7 +162,6 @@ public class PublicKey extends Point{
 
   public String address(String net, Boolean compressed){
     byte[] pbk_hash = encode(compressed, true); // make true when ripemd is implemented
-
     byte version = (byte)0x6f;
     
     if (net == "main"){

@@ -641,7 +641,7 @@ class transforms {
         b = temp[0];
         d = temp[1];
         /* 79 */
-        System.out.println(a + " " + b + " "+ c + " " + d + " " + e);
+        // System.out.println(a + " " + b + " "+ c + " " + d + " " + e);
 
         long t = ((((state[1] + cc + d) % 0x100000000L)) + 0x100000000L) % 0x100000000L;
         state[1] = ((((state[2] + dd + e) % 0x100000000L)) + 0x100000000L) % 0x100000000L;
