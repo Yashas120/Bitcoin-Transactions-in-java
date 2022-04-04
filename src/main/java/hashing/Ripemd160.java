@@ -7,7 +7,7 @@ import java.util.Arrays;
 // Copyrights
 // ==========
 
-// This code is a derived from an implementation by Markus Friedl which is
+// This code is a derived from an implementation by 0which is
 // subject to the following license. This Python implementation is not
 // subject to any other license.
 
@@ -653,10 +653,14 @@ class transforms {
 }
 
 public class Ripemd160 extends transforms{
-    private byte[] Padding = new byte[64];
-    
-    public Ripemd160(){
+    private static Ripemd160 obj = new Ripemd160();
+    private byte[] Padding;
+    private Ripemd160(){
+        Padding = new byte[64];
         Padding[0] = (byte)0x80;
+    }
+    public static Ripemd160 getRipemd160(){
+        return obj;
     }
     
     private RMDContext RMDUpdate(RMDContext ctx, byte arr[], int len){

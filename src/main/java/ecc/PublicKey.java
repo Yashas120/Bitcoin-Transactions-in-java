@@ -109,9 +109,9 @@ public class PublicKey extends Point{
       }
     }
     if(hash160){
-      Sha sha = new Sha();
+      Sha sha = Sha.getSha();
       pbk = sha.sha256(pbk);
-      Ripemd160 rip = new Ripemd160();
+      Ripemd160 rip = Ripemd160.getRipemd160();
       pbk = rip.RMD(pbk);
       return pbk;
     }
@@ -194,7 +194,7 @@ public class PublicKey extends Point{
       i++;
     }
 
-    Sha hash = new Sha();
+    Sha hash = Sha.getSha();
     byte[] checksum = hash.sha256(hash.sha256(version_pbk_hash));
     byte [] byte_address = new byte[version_pbk_hash.length + 4];
     

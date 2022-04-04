@@ -153,8 +153,16 @@ class shaConstants extends shaFunctions{
 
 
 public class Sha extends shaConstants{
-    private long[] _K = super.genK();
-    private long[] _H = super.genH();
+    private long[] _K;
+    private long[] _H;
+    private static Sha obj = new Sha();
+    private Sha(){
+        _K = super.genK();
+        _H = super.genH();
+    }
+    public static Sha getSha(){
+        return obj;
+    }
     public byte[] sha256(byte[] arr){
         long []K = Arrays.copyOf(_K , _K.length);
         long []H = Arrays.copyOf(_H , _H.length);
