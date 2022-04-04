@@ -5,7 +5,7 @@ import hashing.Sha;
 public class App {
 
     public static void main(String[] args) throws Exception {
-        Sha hash = new Sha();
+        Sha hash = Sha.getSha();
         String str = "a longer message to make sure that a larger number of blocks works okay too";
         for(int i=0;i<14;i++){
             str += "a longer message to make sure that a larger number of blocks works okay too";
