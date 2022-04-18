@@ -6,8 +6,7 @@ import ecc.Curve;
 import ecc.Point;
 import ecc.Generator;
 import ecc.PublicKey;
-import get.EntityAsString;
-import get.ParseLinksExample;
+import scraper.ParseBlockChain;
 
 public class BTC{
   public static String toHex(String arg) {
@@ -86,7 +85,7 @@ public class BTC{
     System.out.println("Time : "+duration/1000000+" ms");
     System.out.println("-------------------------------------------------------------------");
 
-    String secretKey_string = "483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8";
+    String secretKey_string = "1";
     BigInteger secretKey = new BigInteger(toHex(secretKey_string),16);
     startTime = System.nanoTime();
     Point publicKey = G.multiply(secretKey);
@@ -108,9 +107,7 @@ public class BTC{
     System.out.println("Time Taken to Generate : "+duration/1000000+" ms");
     System.out.println("-------------------------------------------------------------------");
 
-    // EntityAsString e = new EntityAsString();
-    // e.get();
-    ParseLinksExample e = new ParseLinksExample();
+    ParseBlockChain e = new ParseBlockChain();
     e.get();
   }
 }
