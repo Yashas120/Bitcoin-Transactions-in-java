@@ -7,7 +7,9 @@ import transaction.Tx;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-import ecc.*;
+import ecc.Curve;
+import ecc.Point;
+import ecc.PublicKey;
 
 public class test{
     static protected byte[] hexStringToByteArray(String s) {
@@ -102,7 +104,7 @@ public class test{
         to.add(tx_out2);
         Tx tx = new Tx(1,ti,to);
 
-        
+
     }
 }
 
