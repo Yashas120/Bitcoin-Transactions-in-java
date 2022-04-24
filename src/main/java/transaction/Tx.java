@@ -223,50 +223,48 @@ class helper{
     }
 }
 
-class TxFetcher{
-    static public Tx fetch(String tx_id, String net) throws Exception{
-        tx_id = tx_id.toLowerCase();
-        String txdb_dir = "txdb";
-        Path currentPath = Paths.get(txdb_dir);
-        currentPath.resolve(tx_id);
-        String cache_file = currentPath.toString();
+// class TxFetcher{
+//     static public Tx fetch(String tx_id, String net) throws Exception{
+//         tx_id = tx_id.toLowerCase();
+//         String txdb_dir = "txdb";
+//         Path currentPath = Paths.get(txdb_dir);
+//         currentPath.resolve(tx_id);
+//         String cache_file = currentPath.toString();
 
-        // Cache transactions on disk so we're not stressing the generous API provider
-        byte[] raw;
-        if(Files.exists(currentPath)){
-            raw = Files.readAllBytes(currentPath);
-        }
-        else{
-            String url = "";
-            if(net=="main"){
-                url = String.format("https://blockstream.info/api/tx/%s/hex",tx_id );
-            }
-            else if(net=="test"){
-                url = String.format("https://blockstream.info/testnet/api/tx/%s/hex",tx_id);
-            }
-            else{
-                throw new Exception(String.format("%s is not a valid net type, should be  main|test",net));
-            }
-            // java.util.Scanner s = new java.util.Scanner(new java.net.URL(url).openStream());
-            // String response = "";
-            // response += s.useDelimiter("\\A").next();
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .build();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            BigInteger b = new BigInteger(response.body().strip(),16);
-            raw = b.toByteArray();
-            if(!Files.isDirectory(Paths.get(txdb_dir))){
-                Files.createDirectories(Paths.get(txdb_dir));
-                Files.write(Paths.get(cache_file), raw);
-            }
-        }
-        Tx tx = new Tx();
-        tx = tx.decode(tx,raw);
-        return tx;
-    }
-}
+//         // Cache transactions on disk so we're not stressing the generous API provider
+//         byte[] raw;
+//         if(Files.exists(currentPath)){
+//             raw = Files.readAllBytes(currentPath);
+//         }
+//         else{
+//             String url = "";
+//             if(net=="main"){
+//                 url = String.format("https://blockstream.info/api/tx/%s/hex",tx_id );
+//             }
+//             else if(net=="test"){
+//                 url = String.format("https://blockstream.info/testnet/api/tx/%s/hex",tx_id);
+//             }
+//             else{
+//                 throw new Exception(String.format("%s is not a valid net type, should be  main|test",net));
+//             }
+
+//             HttpClient client = HttpClient.newHttpClient();
+//             HttpRequest request = HttpRequest.newBuilder()
+//                 .uri(URI.create(url))
+//                 .build();
+//             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+//             BigInteger b = new BigInteger(response.body().strip(),16);
+//             raw = b.toByteArray();
+//             if(!Files.isDirectory(Paths.get(txdb_dir))){
+//                 Files.createDirectories(Paths.get(txdb_dir));
+//                 Files.write(Paths.get(cache_file), raw);
+//             }
+//         }
+//         Tx tx = new Tx();
+//         tx = tx.decode(tx,raw);
+//         return tx;
+//     }
+// }
 
     class Tx {
         protected int version;
@@ -337,8 +335,16 @@ class TxIn{
     byte[] prev_tx;
     int prev_index;
     Script script_sig = new Script();
-    int sequence = 0xffffffff;
+    int sequence; 
     String net;
+
+    TxIn(byte[] pt, int pi, Script ss, String net){
+        this.prev_tx = pt.clone();
+        this.prev_index = pi;
+        this.script_sig = ss;
+        this.sequence = 0xffffffff;
+        this.net = net;
+    }
 
     public byte[] encode(int script_override) throws Exception{
         List<Byte> out = new ArrayList<Byte>();
@@ -390,6 +396,11 @@ class TxIn{
 class TxOut{
     protected int amount = 0;
     protected Script script_pubkey = new Script();
+
+    TxOut(int amt, Script sp){
+        this.amount = amt;
+        this.script_pubkey = sp;
+    }
 
     public byte[] encode() throws Exception{
         ArrayList<Byte> out = new ArrayList<Byte>();
