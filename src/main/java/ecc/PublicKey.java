@@ -115,7 +115,7 @@ public class PublicKey extends Point{
     return builder.toString();
   }
 
-  private byte[] encode(Boolean compressed, Boolean hash160){
+  public byte[] encode(Boolean compressed, Boolean hash160){
     
     byte []pbk;
     if (compressed){

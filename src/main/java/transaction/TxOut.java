@@ -1,8 +1,8 @@
 package transaction;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
-import java.nio.*;
+import java.nio.ByteBuffer;
 import java.util.*;
 
 class helper{
@@ -206,119 +206,32 @@ class helper{
     }
 }
 
-// class TxFetcher{
-//     static public Tx fetch(String tx_id, String net) throws Exception{
-//         tx_id = tx_id.toLowerCase();
-//         String txdb_dir = "txdb";
-//         Path currentPath = Paths.get(txdb_dir);
-//         currentPath.resolve(tx_id);
-//         String cache_file = currentPath.toString();
+public class TxOut{
+    protected int amount = 0;
+    protected Script script_pubkey;
 
-//         // Cache transactions on disk so we're not stressing the generous API provider
-//         byte[] raw;
-//         if(Files.exists(currentPath)){
-//             raw = Files.readAllBytes(currentPath);
-//         }
-//         else{
-//             String url = "";
-//             if(net=="main"){
-//                 url = String.format("https://blockstream.info/api/tx/%s/hex",tx_id );
-//             }
-//             else if(net=="test"){
-//                 url = String.format("https://blockstream.info/testnet/api/tx/%s/hex",tx_id);
-//             }
-//             else{
-//                 throw new Exception(String.format("%s is not a valid net type, should be  main|test",net));
-//             }
+    public TxOut(int amt, Script sp){
+        this.amount = amt;
+        this.script_pubkey = sp;
+    }
+    public static void setScript(TxOut tx, Script sp){
+        tx.script_pubkey = sp;
+    }
 
-//             HttpClient client = HttpClient.newHttpClient();
-//             HttpRequest request = HttpRequest.newBuilder()
-//                 .uri(URI.create(url))
-//                 .build();
-//             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-//             BigInteger b = new BigInteger(response.body().strip(),16);
-//             raw = b.toByteArray();
-//             if(!Files.isDirectory(Paths.get(txdb_dir))){
-//                 Files.createDirectories(Paths.get(txdb_dir));
-//                 Files.write(Paths.get(cache_file), raw);
-//             }
-//         }
-//         Tx tx = new Tx();
-//         tx = tx.decode(tx,raw);
-//         return tx;
-//     }
-// }
-
-    public class Tx {
-        protected int version;
-        protected ArrayList<TxIn> tx_ins;
-        protected ArrayList<TxOut> tx_outs;
-        protected int locktime;
-
-        public Tx(int v, ArrayList<TxIn> ti, ArrayList<TxOut> to){
-            this.version = v;
-            this.tx_ins = ti;
-            this.tx_outs = to;
-            this.locktime = 0;
+    public byte[] encode() throws Exception{
+        ArrayList<Byte> out = new ArrayList<Byte>();
+        for(byte p : helper.encode_int(this.amount, 8, "little")){
+                out.add(p);
         }
-
-        protected byte[] encode(boolean force_legacy, int sig_index) throws Exception{
-            if(!(sig_index > -1)){
-                sig_index = -1;
-            }
-            List<Byte> out = new ArrayList<Byte>();
-            // Encode metadata
-            byte[] temp = helper.encode_int(this.version,4,"little");
-            for(int i=0; i<temp.length; i++){
-                out.add(temp[i]);
-            }
-            // Encode Inputs
-            temp = helper.encode_varint(this.tx_ins.size());
-            for(int i=0; i<temp.length; i++){
-                out.add(temp[i]);
-            }
-            if(sig_index == -1){
-                for(TxIn tx_in : this.tx_ins){
-                    for(byte b : tx_in.encode(1)){
-                        out.add(b);
-                    }
-                }
-            }
-            else{
-                ListIterator<TxIn> lt = this.tx_ins.listIterator();
-                while(lt.hasNext()){
-                    for(byte b : lt.next().encode((sig_index==lt.nextIndex())?1:2)){
-                        out.add(b);
-                    }
-                }
-            }
-            // Encode outputs
-            temp = helper.encode_varint(this.tx_outs.size());
-            for(int i=0; i<temp.length; i++){
-                out.add(temp[i]);
-            }
-            for(TxOut tx_out : this.tx_outs){
-                for(byte b : tx_out.encode()){
-                    out.add(b);
-                }
-            }
-            // Encode Locktime
-            for(byte b : helper.encode_int(this.locktime,4,"little")){
-                out.add(b);
-            }
-            // Encode Sig Index
-            if(sig_index != -1){
-                for(byte b : helper.encode_int(1,4,"little")){
-                    out.add(b);
-                }
-            }
-            byte[] bytes = new byte[out.size()];
+        for(byte p : this.script_pubkey.encode()){
+            out.add(p);
+        }
+        byte[] bytes = new byte[out.size()];
             int j=0;
             for(Byte b: out.toArray(new Byte[0])) {
                 bytes[j++] = b.byteValue();
             }
-            return bytes;  
-        }
+        return bytes;
     }
-
+}
 
