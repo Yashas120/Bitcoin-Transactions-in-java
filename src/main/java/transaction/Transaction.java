@@ -3,13 +3,14 @@ package transaction;
 import hashing.Sha;
 import hashing.Ripemd160;
 import ecc.PublicKey;
-import ecdsa.verify;
 import ecdsa.Signature;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.http.*;
@@ -22,79 +23,27 @@ import java.math.*;
 
 
 class helper{
-    static int decode_int(byte[] s, long nbytes, String encoding){
-        if(encoding == "little"){
-            // for (int i = 0; i < nbytes/ 2; i++) {
-            //     byte temp = s[i];
-            //     s[i] = s[nbytes - i - 1];
-            //     s[nbytes - i - 1] = temp;
-            // }
-            // // System.out.println(new BigInteger(1, bytes));
-            // return new BigInteger(1, s)
-            return java.nio.ByteBuffer.wrap(s).order(java.nio.ByteOrder.LITTLE_ENDIAN).getInt();
-        }
-        else{
-            return java.nio.ByteBuffer.wrap(s).getInt();
-        }
-    }
 
-    static byte[] encode_int(int i, int nbytes, String encoding){ 
-        // have to check this as allocate allows only int and we need long
-        
-        ByteBuffer b = ByteBuffer.allocate(nbytes);
-        if(encoding == "little"){
-            b.order(ByteOrder.LITTLE_ENDIAN);
-            b.putInt(i);
-            return b.array();
-        }
-        else{
-            b.order(ByteOrder.BIG_ENDIAN);
-            b.putInt(i);
-            return b.array();
-        }
-    }
 
-    static int decode_varint(byte[] s){
-    int i = decode_int(s, 1,"little");
-    if(i == 0xfd)
-        return decode_int(s, 2,"little");
-    else if (i == 0xfe)
-        return decode_int(s, 4,"little");
-    else if (i == 0xff)
-        return decode_int(s, 8,"little");
-    else
-        return i;
-    }
+    public static String bytesToHexforDecode(byte[] byteArray, ByteOrder byteOrder) {
+        final char[] lookup = new char[]{0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46};
+         // our output size will be exactly 2x byte-array length
+        final char[] buffer = new char[byteArray.length * 2];
 
-    static byte[] encode_varint(int i) throws IOException{
-    
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        if(i < 0xfd){
-            output.write(i);
-            output.flush();
-            return output.toByteArray();
+        int index;
+        for (int i = 0; i < byteArray.length; i++) {
+            // for little endian we count from last to first
+            index = (byteOrder == ByteOrder.BIG_ENDIAN) ? i : byteArray.length - i - 1;
+            
+            // extract the upper 4 bit and look up char (0-A)
+            buffer[i << 1] =lookup[(byteArray[index] >> 4) & 0xF];
+            // extract the lower 4 bit and look up char (0-A)
+            buffer[(i << 1) + 1] = lookup[(byteArray[index] & 0xF)];
         }
-        else if (i < 0x10000){
-            output.write(253);
-            output.write(encode_int(i, 2,"little"));
-            return output.toByteArray();
-        }
-        else if (i < 0x100000000){
-            output.write(254);
-            output.write(encode_int(i, 4,"little"));
-            return output.toByteArray();
-        }
-        else if (i < 0x10000000000000000){
-            output.write(255);
-            output.write(encode_int(i, 8,"little"));
-            return output.toByteArray();
-        }
-        else{
-            throw new Exception(String.format("integer too large: %d",i));
-        }
+        return new String(buffer);
     }
     private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
-    static protected String bytesToHex(byte[] bytes) {
+    protected String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
             int v = bytes[j] & 0xFF;
@@ -131,107 +80,189 @@ class helper{
 
     static protected long bytesToLongLittle(byte []arr){
         byte []conv = new byte[8];
-        conv[4] = arr[3];
-        conv[5] = arr[2];
-        conv[6] = arr[1];
-        conv[7] = arr[0];
+        conv[0] = arr[0];
+        conv[1] = arr[1];
+        conv[2] = arr[2];
+        conv[3] = arr[3];
         return ByteBuffer.wrap(conv).getLong();
     }
 
-    // Dictionary OP_CODE_NAMES = new Hashtable();
-    static{
-        Map<Integer, String> OP_CODE_NAMES = new HashMap<>();
+    static BigInteger decode_int(InputStream s, long nbytes, String encoding) throws IOException{
+        byte[] inp = new byte[(int) nbytes];
+        for(int i=0; i<nbytes; i++){
+            inp[i] = (byte)s.read();
+        }
+        if(encoding == "little"){
+            return new BigInteger(bytesToHexforDecode(inp, ByteOrder.LITTLE_ENDIAN),16);
+        }
+        else{
+            return new BigInteger(bytesToHexforDecode(inp, ByteOrder.BIG_ENDIAN),16);
+        }
+    }
 
-        OP_CODE_NAMES.put(0,"OP_0");
-        OP_CODE_NAMES.put(76,"OP_PUSHDATA1");
-        OP_CODE_NAMES.put(77,"OP_PUSHDATA2");
-        OP_CODE_NAMES.put(78,"OP_PUSHDATA4");
-        OP_CODE_NAMES.put(79,"OP_1NEGATE");
-        OP_CODE_NAMES.put(81,"OP_1");
-        OP_CODE_NAMES.put(82,"OP_2");
-        OP_CODE_NAMES.put(83,"OP_3");
-        OP_CODE_NAMES.put(84,"OP_4");
-        OP_CODE_NAMES.put(85,"OP_5");
-        OP_CODE_NAMES.put(86,"OP_6");
-        OP_CODE_NAMES.put(87,"OP_7");
-        OP_CODE_NAMES.put(88,"OP_8");
-        OP_CODE_NAMES.put(89,"OP_9");
-        OP_CODE_NAMES.put(90,"OP_10");
-        OP_CODE_NAMES.put(91,"OP_11");
-        OP_CODE_NAMES.put(92,"OP_12");
-        OP_CODE_NAMES.put(93,"OP_13");
-        OP_CODE_NAMES.put(94,"OP_14");
-        OP_CODE_NAMES.put(95,"OP_15");
-        OP_CODE_NAMES.put(96,"OP_16");
-        OP_CODE_NAMES.put(97,"OP_NOP");
-        OP_CODE_NAMES.put(99,"OP_IF");
-        OP_CODE_NAMES.put(100, "OP_NOTIF");
-        OP_CODE_NAMES.put(103, "OP_ELSE");
-        OP_CODE_NAMES.put(104, "OP_ENDIF");
-        OP_CODE_NAMES.put(105 ,"OP_VERIFY");
-        OP_CODE_NAMES.put(106 ,"OP_RETURN");
-        OP_CODE_NAMES.put(107 ,"OP_TOALTSTACK");
-        OP_CODE_NAMES.put(108 ,"OP_FROMALTSTACK");
-        OP_CODE_NAMES.put(109 ,"OP_2DROP");
-        OP_CODE_NAMES.put(110 ,"OP_2DUP");
-        OP_CODE_NAMES.put(111 ,"OP_3DUP");
-        OP_CODE_NAMES.put(112 ,"OP_2OVER");
-        OP_CODE_NAMES.put(113 ,"OP_2ROT");
-        OP_CODE_NAMES.put(114 ,"OP_2SWAP");
-        OP_CODE_NAMES.put(115 ,"OP_IFDUP");
-        OP_CODE_NAMES.put(116 ,"OP_DEPTH");
-        OP_CODE_NAMES.put(117 ,"OP_DROP");
-        OP_CODE_NAMES.put(118 ,"OP_DUP");
-        OP_CODE_NAMES.put(119 ,"OP_NIP");
-        OP_CODE_NAMES.put(120 ,"OP_OVER");
-        OP_CODE_NAMES.put(121 ,"OP_PICK");
-        OP_CODE_NAMES.put(122 ,"OP_ROLL");
-        OP_CODE_NAMES.put(123 ,"OP_ROT");
-        OP_CODE_NAMES.put(124 ,"OP_SWAP");
-        OP_CODE_NAMES.put(125 ,"OP_TUCK");
-        OP_CODE_NAMES.put(130 ,"OP_SIZE");
-        OP_CODE_NAMES.put(135 ,"OP_EQUAL");
-        OP_CODE_NAMES.put(136 ,"OP_EQUALVERIFY");
-        OP_CODE_NAMES.put(139 ,"OP_1ADD");
-        OP_CODE_NAMES.put(140 ,"OP_1SUB");
-        OP_CODE_NAMES.put(143 ,"OP_NEGATE");
-        OP_CODE_NAMES.put(144 ,"OP_ABS");
-        OP_CODE_NAMES.put(145 ,"OP_NOT");
-        OP_CODE_NAMES.put(146 ,"OP_0NOTEQUAL");
-        OP_CODE_NAMES.put(147 ,"OP_ADD");
-        OP_CODE_NAMES.put(148 ,"OP_SUB");
-        OP_CODE_NAMES.put(154 ,"OP_BOOLAND");
-        OP_CODE_NAMES.put(155 ,"OP_BOOLOR");
-        OP_CODE_NAMES.put(156 ,"OP_NUMEQUAL");
-        OP_CODE_NAMES.put(157 ,"OP_NUMEQUALVERIFY");
-        OP_CODE_NAMES.put(158 ,"OP_NUMNOTEQUAL");
-        OP_CODE_NAMES.put(159 ,"OP_LESSTHAN");
-        OP_CODE_NAMES.put(160 ,"OP_GREATERTHAN");
-        OP_CODE_NAMES.put(161 ,"OP_LESSTHANOREQUAL");
-        OP_CODE_NAMES.put(162 ,"OP_GREATERTHANOREQUAL");
-        OP_CODE_NAMES.put(163 ,"OP_MIN");
-        OP_CODE_NAMES.put(164 ,"OP_MAX");
-        OP_CODE_NAMES.put(165 ,"OP_WITHIN");
-        OP_CODE_NAMES.put(166 ,"OP_RIPEMD160");
-        OP_CODE_NAMES.put(167 ,"OP_SHA1");
-        OP_CODE_NAMES.put(168 ,"OP_SHA256");
-        OP_CODE_NAMES.put(169 ,"OP_HASH160");
-        OP_CODE_NAMES.put(170 ,"OP_HASH256");
-        OP_CODE_NAMES.put(171 ,"OP_CODESEPARATOR");
-        OP_CODE_NAMES.put(172 ,"OP_CHECKSIG");
-        OP_CODE_NAMES.put(173 ,"OP_CHECKSIGVERIFY");
-        OP_CODE_NAMES.put(174 ,"OP_CHECKMULTISIG");
-        OP_CODE_NAMES.put(175 ,"OP_CHECKMULTISIGVERIFY");
-        OP_CODE_NAMES.put(176 ,"OP_NOP1");
-        OP_CODE_NAMES.put(177 ,"OP_CHECKLOCKTIMEVERIFY");
-        OP_CODE_NAMES.put(178 ,"OP_CHECKSEQUENCEVERIFY");
-        OP_CODE_NAMES.put(179 ,"OP_NOP4");
-        OP_CODE_NAMES.put(180 ,"OP_NOP5");
-        OP_CODE_NAMES.put(181 ,"OP_NOP6");
-        OP_CODE_NAMES.put(182 ,"OP_NOP7");
-        OP_CODE_NAMES.put(183 ,"OP_NOP8");
-        OP_CODE_NAMES.put(184 ,"OP_NOP9");
-        OP_CODE_NAMES.put(185 ,"OP_NOP10");
+    static byte[] encode_int(int i, int nbytes, String encoding){ 
+        BigInteger bigInt = BigInteger.valueOf(i);      
+        byte[] s = bigInt.toByteArray();
+        byte[] out = new byte[nbytes];
+        reverse(s);
+        if(encoding == "little"){
+            for(int ind=0; ind<nbytes; ind++){
+                if(ind<s.length){
+                    out[ind] = s[ind];
+                    continue;
+                }
+                out[ind] = 0;
+            }
+        }
+        else{
+            for(int ind=0; ind < nbytes; ind++){
+                if(ind < nbytes - s.length){
+                    out[ind] = 0;
+                    continue;
+                }
+                out[ind] = s[nbytes - ind - 1];
+            }
+        }
+        return out;
+    }
+
+    static int decode_varint(InputStream s) throws IOException{
+        BigInteger i = decode_int(s, 1,"little");
+        if(i.equals(new BigInteger("fd")))
+            return decode_int(s, 2,"little").intValue();
+        else if (i.equals(new BigInteger("fe")))
+            return decode_int(s, 4,"little").intValue();
+                else if (i.equals(new BigInteger("ff")))
+            return decode_int(s, 8,"little").intValue();
+        else
+            return i.intValue();
+    }
+
+    static byte[] encode_varint(int i) throws IOException{
+    
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        if(i < 0xfd){
+            output.write(i);
+            output.flush();
+            return output.toByteArray();
+        }
+        else if (i < 0x10000){
+            output.write(253);
+            output.write(encode_int(i, 2,"little"));
+            return output.toByteArray();
+        }
+        else if (i < 0x100000000l){
+            output.write(254);
+            output.write(encode_int(i, 4,"little"));
+            return output.toByteArray();
+        }
+        else if (i < BigInteger.valueOf(0x10000000000000000)){
+            output.write(255);
+            output.write(encode_int(i, 8,"little"));
+            return output.toByteArray();
+        }
+        else{
+            throw new Exception(String.format("integer too large: %d",i));
+        }
+    }
+
+
+    // Dictionary OP_CODE_NAMES = new Hashtable();
+    public static Map<Byte,String> OCN(){ 
+        Map<Byte, String> OP_CODE_NAMES = new HashMap<>();
+
+        OP_CODE_NAMES.put((byte) 0,"OP_0");
+        OP_CODE_NAMES.put((byte) 76,"OP_PUSHDATA1");
+        OP_CODE_NAMES.put((byte) 77,"OP_PUSHDATA2");
+        OP_CODE_NAMES.put((byte) 78,"OP_PUSHDATA4");
+        OP_CODE_NAMES.put((byte) 79,"OP_1NEGATE");
+        OP_CODE_NAMES.put((byte) 81,"OP_1");
+        OP_CODE_NAMES.put((byte) 82,"OP_2");
+        OP_CODE_NAMES.put((byte) 83,"OP_3");
+        OP_CODE_NAMES.put((byte) 84,"OP_4");
+        OP_CODE_NAMES.put((byte) 85,"OP_5");
+        OP_CODE_NAMES.put((byte) 86,"OP_6");
+        OP_CODE_NAMES.put((byte) 87,"OP_7");
+        OP_CODE_NAMES.put((byte) 88,"OP_8");
+        OP_CODE_NAMES.put((byte) 89,"OP_9");
+        OP_CODE_NAMES.put((byte) 90,"OP_10");
+        OP_CODE_NAMES.put((byte) 91,"OP_11");
+        OP_CODE_NAMES.put((byte) 92,"OP_12");
+        OP_CODE_NAMES.put((byte) 93,"OP_13");
+        OP_CODE_NAMES.put((byte) 94,"OP_14");
+        OP_CODE_NAMES.put((byte) 95,"OP_15");
+        OP_CODE_NAMES.put((byte) 96,"OP_16");
+        OP_CODE_NAMES.put((byte) 97,"OP_NOP");
+        OP_CODE_NAMES.put((byte) 99,"OP_IF");
+        OP_CODE_NAMES.put((byte) 100, "OP_NOTIF");
+        OP_CODE_NAMES.put((byte) 103, "OP_ELSE");
+        OP_CODE_NAMES.put((byte) 104, "OP_ENDIF");
+        OP_CODE_NAMES.put((byte) 105 ,"OP_VERIFY");
+        OP_CODE_NAMES.put((byte) 106 ,"OP_RETURN");
+        OP_CODE_NAMES.put((byte) 107 ,"OP_TOALTSTACK");
+        OP_CODE_NAMES.put((byte) 108 ,"OP_FROMALTSTACK");
+        OP_CODE_NAMES.put((byte) 109 ,"OP_2DROP");
+        OP_CODE_NAMES.put((byte) 110 ,"OP_2DUP");
+        OP_CODE_NAMES.put((byte) 111 ,"OP_3DUP");
+        OP_CODE_NAMES.put((byte) 112 ,"OP_2OVER");
+        OP_CODE_NAMES.put((byte) 113 ,"OP_2ROT");
+        OP_CODE_NAMES.put((byte) 114 ,"OP_2SWAP");
+        OP_CODE_NAMES.put((byte) 115 ,"OP_IFDUP");
+        OP_CODE_NAMES.put((byte) 116 ,"OP_DEPTH");
+        OP_CODE_NAMES.put((byte) 117 ,"OP_DROP");
+        OP_CODE_NAMES.put((byte) 118 ,"OP_DUP");
+        OP_CODE_NAMES.put((byte) 119 ,"OP_NIP");
+        OP_CODE_NAMES.put((byte) 120 ,"OP_OVER");
+        OP_CODE_NAMES.put((byte) 121 ,"OP_PICK");
+        OP_CODE_NAMES.put((byte) 122 ,"OP_ROLL");
+        OP_CODE_NAMES.put((byte) 123 ,"OP_ROT");
+        OP_CODE_NAMES.put((byte) 124 ,"OP_SWAP");
+        OP_CODE_NAMES.put((byte) 125 ,"OP_TUCK");
+        OP_CODE_NAMES.put((byte) 130 ,"OP_SIZE");
+        OP_CODE_NAMES.put((byte) 135 ,"OP_EQUAL");
+        OP_CODE_NAMES.put((byte) 136 ,"OP_EQUALVERIFY");
+        OP_CODE_NAMES.put((byte) 139 ,"OP_1ADD");
+        OP_CODE_NAMES.put((byte) 140 ,"OP_1SUB");
+        OP_CODE_NAMES.put((byte) 143 ,"OP_NEGATE");
+        OP_CODE_NAMES.put((byte) 144 ,"OP_ABS");
+        OP_CODE_NAMES.put((byte) 145 ,"OP_NOT");
+        OP_CODE_NAMES.put((byte) 146 ,"OP_0NOTEQUAL");
+        OP_CODE_NAMES.put((byte) 147 ,"OP_ADD");
+        OP_CODE_NAMES.put((byte) 148 ,"OP_SUB");
+        OP_CODE_NAMES.put((byte) 154 ,"OP_BOOLAND");
+        OP_CODE_NAMES.put((byte) 155 ,"OP_BOOLOR");
+        OP_CODE_NAMES.put((byte) 156 ,"OP_NUMEQUAL");
+        OP_CODE_NAMES.put((byte) 157 ,"OP_NUMEQUALVERIFY");
+        OP_CODE_NAMES.put((byte) 158 ,"OP_NUMNOTEQUAL");
+        OP_CODE_NAMES.put((byte) 159 ,"OP_LESSTHAN");
+        OP_CODE_NAMES.put((byte) 160 ,"OP_GREATERTHAN");
+        OP_CODE_NAMES.put((byte) 161 ,"OP_LESSTHANOREQUAL");
+        OP_CODE_NAMES.put((byte) 162 ,"OP_GREATERTHANOREQUAL");
+        OP_CODE_NAMES.put((byte) 163 ,"OP_MIN");
+        OP_CODE_NAMES.put((byte) 164 ,"OP_MAX");
+        OP_CODE_NAMES.put((byte) 165 ,"OP_WITHIN");
+        OP_CODE_NAMES.put((byte) 166 ,"OP_RIPEMD160");
+        OP_CODE_NAMES.put((byte) 167 ,"OP_SHA1");
+        OP_CODE_NAMES.put((byte) 168 ,"OP_SHA256");
+        OP_CODE_NAMES.put((byte) 169 ,"OP_HASH160");
+        OP_CODE_NAMES.put((byte) 170 ,"OP_HASH256");
+        OP_CODE_NAMES.put((byte) 171 ,"OP_CODESEPARATOR");
+        OP_CODE_NAMES.put((byte) 172 ,"OP_CHECKSIG");
+        OP_CODE_NAMES.put((byte) 173 ,"OP_CHECKSIGVERIFY");
+        OP_CODE_NAMES.put((byte) 174 ,"OP_CHECKMULTISIG");
+        OP_CODE_NAMES.put((byte) 175 ,"OP_CHECKMULTISIGVERIFY");
+        OP_CODE_NAMES.put((byte) 176 ,"OP_NOP1");
+        OP_CODE_NAMES.put((byte) 177 ,"OP_CHECKLOCKTIMEVERIFY");
+        OP_CODE_NAMES.put((byte) 178 ,"OP_CHECKSEQUENCEVERIFY");
+        OP_CODE_NAMES.put((byte) 179 ,"OP_NOP4");
+        OP_CODE_NAMES.put((byte) 180 ,"OP_NOP5");
+        OP_CODE_NAMES.put((byte) 181 ,"OP_NOP6");
+        OP_CODE_NAMES.put((byte) 182 ,"OP_NOP7");
+        OP_CODE_NAMES.put((byte) 183 ,"OP_NOP8");
+        OP_CODE_NAMES.put((byte) 184 ,"OP_NOP9");
+        OP_CODE_NAMES.put((byte) 185 ,"OP_NOP10");
+
+        return OP_CODE_NAMES;
     }
 }
 
@@ -556,6 +587,128 @@ class TxOut{
 }
 
 class Script{
-    
+    ArrayList<ArrayList<Object>> cmds = new ArrayList<ArrayList<Object>>();
 
+    private static String repr_int(int cmd){
+        Map<Byte, String> OP_CODE_NAMES = helper.OCN();
+        return OP_CODE_NAMES.getOrDefault(cmd,String.format("OP_[%d]",cmd));
+    }
+
+    private static String repr_bytes(byte cmd){
+        return Integer.toHexString(cmd);
+    }
+
+    public String repr(){
+        String res = "";
+        for(Object p : this.cmds){
+            if(p instanceof Integer){
+                res += Script.repr_int((int)p);
+            }
+            else{
+                res += Script.repr_bytes((byte)p);
+            }
+        }
+        return res;
+    }
+
+    public Script decode(byte[] s) throws Exception{
+        InputStream stream = new ByteArrayInputStream(s);
+        Script cls = new Script();
+        int length = helper.decode_varint(s);
+        ArrayList<Object> cmd = new ArrayList<Object>();
+        int count = 0;
+        int current;
+        while(count < length){
+           current = stream.read();
+           count ++;
+           if (1 <= current && current <= 75){
+                // Elements of size [1,75] bytes
+                for(int i=0; i<current; i++){
+                    cmd.add(stream.read());
+                }
+                count += current;
+           }
+           else if( current == 76){
+                // op_pushdata1: elements of size [76, 255] bytes
+                int data_length = helper.decode_int(s,1,"little");
+                for(int i=0; i<data_length; i++){
+                    cmd.add(stream.read());
+                }
+                count += data_length + 1;
+           }
+           else if(current == 77){
+                // op_pushdata2: elements of size [256-520] bytes
+                int data_length = helper.decode_int(s,2,"little");
+                for(int i=0; i<data_length; i++){
+                    cmd.add(stream.read());
+                }   
+                count += data_length + 2;
+           }
+           else{
+               for(int i=0; i<current; i++){
+                   cmd.add(stream.read());
+               }
+           }
+        }
+        if (count != length){
+            throw new Exception("Parsing script failed");
+        }
+        cls.cmds.add(cmd);
+        return cls;
+    }
+
+    public byte[] encode() throws Exception{
+        ArrayList<Byte> out = new ArrayList<Byte>();
+        for(ArrayList<Object> cmd : this.cmds){
+            int length = cmd.size();
+            if(cmd.get(0) instanceof Integer && length == 1){
+                for(byte i : helper.encode_int((int)cmd.get(0),1,"little")){
+                    out.add(i);
+                }
+            }
+            else{
+                if(length < 75){
+                    for(byte i : helper.encode_int(length,1,"little")){
+                        out.add(i);
+                    }
+                }
+                else if(76 <= length && length <=255){
+                    // pushdata1
+                    for(byte i : helper.encode_int(76,1,"little")){
+                        out.add(i);
+                    }
+                    for(byte i : helper.encode_int(length,1,"little")){
+                        out.add(i);
+                    }
+                }
+                else if(256 <= length && length <=520){
+                    // pushdata2
+                    for(byte i : helper.encode_int(77,1,"little")){
+                        out.add(i);
+                    }
+                    for(byte i : helper.encode_int(length,2,"little")){
+                        out.add(i);
+                    }
+                }
+                else{
+                    throw new Exception(String.format("cmd of length %d bytes is too long",length));
+                }
+            }
+            for(Object i :cmd){
+                out.add((byte)i);
+            }
+        }
+        int ind = 0;
+       for(byte p: helper.encode_varint(out.size())){
+           out.add(ind++,p);
+       }
+       byte[] bytes = new byte[out.size()];
+            int j=0;
+            for(Byte b: out.toArray(new Byte[0])) {
+                bytes[j++] = b.byteValue();
+            }
+        return bytes;
+    }
+
+    
 }

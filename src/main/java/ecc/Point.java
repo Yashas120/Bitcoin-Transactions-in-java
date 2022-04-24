@@ -72,7 +72,7 @@ public class Point{
     return return_val;
   }
 
-  private BigInteger inv(BigInteger n, BigInteger p){
+  public BigInteger inv(BigInteger n, BigInteger p){
     BigInteger return_val[];
     return_val = gcd(n, p);
     return return_val[1].mod(p);
