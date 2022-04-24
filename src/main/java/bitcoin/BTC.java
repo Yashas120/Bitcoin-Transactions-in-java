@@ -6,7 +6,7 @@ import ecc.Curve;
 import ecc.Point;
 import ecc.Generator;
 import ecc.PublicKey;
-import scraper.ParseBlockChain;
+// import scraper.ParseBlockChain;
 
 public class BTC{
   public static String toHex(String arg) {
@@ -107,7 +107,11 @@ public class BTC{
     System.out.println("Time Taken to Generate : "+duration/1000000+" ms");
     System.out.println("-------------------------------------------------------------------");
 
-    ParseBlockChain e = new ParseBlockChain();
-    e.get();
+
+    Object re[] = PublicKey.gen_key_pair();
+    System.out.println(re[0]);
+    System.out.println(re[1]);
+    // ParseBlockChain e = new ParseBlockChain();
+    // e.get();
   }
 }

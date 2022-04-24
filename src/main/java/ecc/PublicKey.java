@@ -3,6 +3,8 @@ package ecc;
 import hashing.Ripemd160;
 import hashing.Sha;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Random;
 
 public class PublicKey extends Point{  
   public PublicKey(Curve curve, BigInteger x, BigInteger y){
@@ -13,6 +15,88 @@ public class PublicKey extends Point{
     return new PublicKey(pt.ecc_curve, pt.x, pt.y);
   }
 
+  public static PublicKey from_sk(BigInteger sk){
+    BigInteger p = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F", 16);
+    BigInteger a = new BigInteger("0000000000000000000000000000000000000000000000000000000000000000", 16);
+    BigInteger b = new BigInteger("0000000000000000000000000000000000000000000000000000000000000007", 16);
+    BigInteger x = new BigInteger("79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798", 16);
+    BigInteger y = new BigInteger("483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8", 16);
+
+    Curve bitcoinCurve = new Curve(p,a,b);
+    Point G = new Point(bitcoinCurve,x,y);
+    Point pk = G.multiply(sk);
+    return toPublicKey(pk);
+  }
+
+  public static PublicKey decode(byte[] bytes){
+    BigInteger p = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F", 16);
+    BigInteger a = new BigInteger("0000000000000000000000000000000000000000000000000000000000000000", 16);
+    BigInteger b = new BigInteger("0000000000000000000000000000000000000000000000000000000000000007", 16);
+    Curve bitcoinCurve = new Curve(p,a,b);
+    Integer test = new Integer(4);
+    
+    if (bytes[0] == test.byteValue()){
+      byte xBytes[] = new byte[32];
+      byte yBytes[] = new byte[32]; 
+      for(int i = 1; i<33; i++){
+        xBytes[i-1] = bytes[i];
+      }
+      for(int i = 33; i<65; i++){
+        yBytes[i-1] = bytes[i];
+      }
+      BigInteger x = new BigInteger(bytesToHex(xBytes), 16);
+      BigInteger y = new BigInteger(bytesToHex(yBytes), 16);
+      Point n = new Point(bitcoinCurve, x, y);
+      return new PublicKey(n.ecc_curve, n.x, n.y);
+    }
+    test = new Integer(2);
+    boolean is_even = bytes[0] == test.byteValue();
+    byte xBytes[] = new byte[bytes.length - 1];
+    for (int i = 1; i<bytes.length; i++){
+      xBytes[i-1] = bytes[i];
+    }
+    BigInteger x = new BigInteger(bytesToHex(xBytes), 16);
+    BigInteger exponent = new BigInteger("3");
+    BigInteger temp = x.modPow(exponent, p).add(new BigInteger("7"));
+    BigInteger y2 = temp.mod(p);
+    exponent = p.add(BigInteger.ONE).divide(new BigInteger("4"));
+    BigInteger y = y2.modPow(exponent, p);
+    if ((y.mod(new BigInteger("2")).compareTo(BigInteger.ZERO) == 0) != is_even){
+      y = p.subtract(y);
+    }
+    return new PublicKey(bitcoinCurve, x, y);
+  }
+
+  public static BigInteger gen_secret_key(){
+    BigInteger n = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141", 16);
+    BigInteger key;
+    while (true){
+      byte[] bytes = new byte[32];
+      Random rand = new Random();
+      rand.nextBytes(bytes);
+      // System.out.println(Arrays.toString(bytes));
+      // for(int i=0;i<32; i++){
+      //   bytes[i] = new Integer("5").byteValue();
+      // }
+      key = new BigInteger(bytesToHex(bytes), 16);
+      BigInteger test = new BigInteger("1");
+      if (key.compareTo(test) == 1 || key.compareTo(test) == 0){
+        if(key.compareTo(n) == -1){
+          break;
+        }
+      }
+    }
+    return key;
+  }
+
+  public static Object[] gen_key_pair(){
+    BigInteger sk = gen_secret_key();
+    PublicKey pk = from_sk(sk);
+    Object [] re = new Object[2];
+    re[0] = sk;
+    re[1] = pk;
+    return re;
+  }
   // private static String print(byte[] bytes) {
   //   StringBuilder sb = new StringBuilder();
   //   sb.append("[ ");
