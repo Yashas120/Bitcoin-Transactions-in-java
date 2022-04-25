@@ -29,6 +29,7 @@ class TxOut_helper{
             j--;
             i++;
         }
+        return array;
     }
     static protected byte[] hexStringToByteArray(String s) {
         int len = s.length();

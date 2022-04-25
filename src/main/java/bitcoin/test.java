@@ -129,17 +129,11 @@ public class test{
         to.add(tx_out2);
         Tx tx = new Tx(1,ti,to);
         byte[] message = tx.encode(true, 0);
-<<<<<<< HEAD
-        System.out.println(bytesToHex(message));
 
-
-
-=======
         System.out.println("---------------------------\n\n\n");
         System.out.println(bytesToHex(message));
         // 0100000001b2364d6ba4cbfd3dad8d6dc8dde1095f959bac4ee4ee7c4b8ab99fc885503246010000001976a9144b3518229b0d3554fe7cd3796ade632aff3069d888acffffffff0250c30000000000001976a91475b0c9fc784ba2ea0839e3cdf2669495cac6707388ac8cb90000000000001976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac0000000001000000
         // 0100000001b2364d6ba4cbfd3dad8d6dc8dde1095f959bac4ee4ee7c4b8ab99fc885503246010000001976a91475b0c9fc784ba2ea0839e3cdf2669495cac6707388ac8cb90000000000001976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac0000000001000000
->>>>>>> 0ed935cd08a43e00e59151664172ecb7131e4f2b
     }
 }
 
