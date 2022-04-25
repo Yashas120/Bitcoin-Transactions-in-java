@@ -212,6 +212,7 @@ public class TxIn{
     Script script_sig;
     int sequence; 
     String net;
+    Script prev_tx_script_pubkey;
 
     public TxIn(byte[] pt, int pi, Script ss, String net){
         this.prev_tx = pt.clone();
@@ -223,6 +224,10 @@ public class TxIn{
 
     public void setScript(TxIn tx, Script sp){
         tx.script_sig = sp;
+    }
+
+    public static void setPrevScript(TxIn tx, Script sp){
+        tx.prev_tx_script_pubkey = sp;
     }
 
     public byte[] encode(int script_override) throws Exception{
@@ -249,9 +254,12 @@ public class TxIn{
             // for(byte p : tx.tx_outs.get(this.prev_index).script_pubkey.encode()){
             //     out.add(p);
             // }
+            for(byte p : this.prev_tx_script_pubkey.encode()){
+                out.add(p);
+            }
+
         }
         else if(script_override == 2){
-
             for(byte p: new Script().encode()){
                 out.add(p);
             }

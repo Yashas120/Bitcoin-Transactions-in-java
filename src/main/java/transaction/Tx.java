@@ -262,7 +262,7 @@ class Tx_helper{
             this.locktime = 0;
         }
 
-        protected byte[] encode(boolean force_legacy, int sig_index) throws Exception{
+        public byte[] encode(boolean force_legacy, int sig_index) throws Exception{
             if(!(sig_index > -1)){
                 sig_index = -1;
             }
