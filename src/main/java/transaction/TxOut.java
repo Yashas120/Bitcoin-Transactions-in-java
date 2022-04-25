@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.*;
 
-class TXIn_helper{
+class TxOut_helper{
 
     private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
     protected static String bytesToHex(byte[] bytes) {
@@ -18,10 +18,7 @@ class TXIn_helper{
         return new String(hexChars);
     }
 
-    static protected void reverse(byte[] array) {
-        if (array == null) {
-            return;
-        }
+    static protected byte[] reverse(byte[] array) {
         int i = 0;
         int j = array.length - 1;
         byte tmp;
@@ -220,7 +217,7 @@ public class TxOut{
 
     public byte[] encode() throws Exception{
         ArrayList<Byte> out = new ArrayList<Byte>();
-        for(byte p : helper.encode_int(this.amount, 8, "little")){
+        for(byte p : TxOut_helper.encode_int(this.amount, 8, "little")){
                 out.add(p);
         }
         for(byte p : this.script_pubkey.encode()){

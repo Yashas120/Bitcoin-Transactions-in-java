@@ -263,23 +263,23 @@ class Tx_helper{
         }
 
         public byte[] encode(boolean force_legacy, int sig_index) throws Exception{
-            if(!(sig_index > -1)){
-                sig_index = -1;
-            }
+            // if(!(sig_index > -1)){
+            //     sig_index = -1;
+            // }
             List<Byte> out = new ArrayList<Byte>();
             // Encode metadata
             byte[] temp = Tx_helper.encode_int(this.version,4,"little");
-            for(int i=0; i<temp.length; i++){
-                out.add(temp[i]);
+            for(byte b : temp){
+                out.add(b);
             }
             // Encode Inputs
             temp = Tx_helper.encode_varint(this.tx_ins.size());
-            for(int i=0; i<temp.length; i++){
-                out.add(temp[i]);
+            for(byte b : temp){
+                out.add(b);
             }
             if(sig_index == -1){
                 for(TxIn tx_in : this.tx_ins){
-                    for(byte b : tx_in.encode(1)){
+                    for(byte b : tx_in.encode(3)){
                         out.add(b);
                     }
                 }
@@ -294,8 +294,8 @@ class Tx_helper{
             }
             // Encode outputs
             temp = Tx_helper.encode_varint(this.tx_outs.size());
-            for(int i=0; i<temp.length; i++){
-                out.add(temp[i]);
+            for(byte b : temp){
+                out.add(b);
             }
             for(TxOut tx_out : this.tx_outs){
                 for(byte b : tx_out.encode()){

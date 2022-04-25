@@ -18,10 +18,7 @@ class helper{
         return new String(hexChars);
     }
 
-    static protected void reverse(byte[] array) {
-        if (array == null) {
-            return;
-        }
+    static protected byte[] reverse(byte[] array) {
         int i = 0;
         int j = array.length - 1;
         byte tmp;
@@ -32,6 +29,7 @@ class helper{
             j--;
             i++;
         }
+        return array;
     }
     static protected byte[] hexStringToByteArray(String s) {
         int len = s.length();
@@ -232,11 +230,11 @@ public class TxIn{
 
     public byte[] encode(int script_override) throws Exception{
         List<Byte> out = new ArrayList<Byte>();
-        TXIn_helper.reverse(this.prev_tx);
+        this.prev_tx = helper.reverse(this.prev_tx);
         for(byte p : this.prev_tx){
             out.add(p);
         }
-        for(byte p : TXIn_helper.encode_int(this.prev_index,4,"little")){
+        for(byte p : helper.encode_int(this.prev_index,4,"little")){
             out.add(p);
         }
 
@@ -267,7 +265,7 @@ public class TxIn{
         else{
             throw new Exception("script_override must be one of None|True|False\n");
         }
-        for(byte p : TXIn_helper.encode_int(this.sequence,4,"little")){
+        for(byte p : helper.encode_int(this.sequence,4,"little")){
             out.add(p);
         }
         byte[] bytes = new byte[out.size()];
