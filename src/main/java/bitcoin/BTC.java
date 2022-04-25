@@ -2,18 +2,32 @@ package bitcoin;
 
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import ecc.Curve;
 import ecc.Point;
 import ecc.Generator;
 import ecc.PublicKey;
 import transaction.TxIn;
 // import scraper.ParseBlockChain;
+import transaction.TxOut;
+import transaction.Script;
+import transaction.Tx;
 
 public class BTC{
   public static String toHex(String arg) {
     return String.format("%040x", new BigInteger(1, arg.getBytes(Charset.forName("UTF-8"))));
   }
-  public static void main(String []args){
+
+  private static String bytesToHex(byte[] in) {
+    final StringBuilder builder = new StringBuilder();
+    for(byte b : in) {
+        builder.append(String.format("%02x", 0xFF & b));
+    }
+    return builder.toString();
+  }
+  public static void main(String []args) throws Exception{
 
     BigInteger p = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F", 16);
     BigInteger a = new BigInteger("0000000000000000000000000000000000000000000000000000000000000000", 16);
@@ -132,12 +146,101 @@ public class BTC{
 
     BigInteger transaction_id = new BigInteger("46325085c89fb98a4b7ceee44eac9b955f09e1ddc86d8dad3dfdcba46b4d36b2", 16);
     TxIn tx_in = new TxIn(transaction_id.toByteArray(), 1, null, "test");
-
     
-    Object re[] = PublicKey.gen_key_pair();
-    System.out.println(re[0]);
-    System.out.println(re[1]);
+    byte[] out1_pkb_hash = PublicKey.toPublicKey(publicKey2).encode(true, true);
+    ArrayList<Object> t = new ArrayList<Object>();
+    ArrayList<ArrayList<Object>> temp = new  ArrayList<ArrayList<Object>>();
+    t.add(118);
+    temp.add(t);
+    t = new ArrayList<Object>();
+    t.add(169);
+    temp.add(t);
+    t = new ArrayList<Object>();
+    for(byte by : out1_pkb_hash){
+        t.add((byte)by);
+    }
+    // System.out.println(Arrays.toString(t.toArray()));
+    temp.add(t);
+    t = new ArrayList<Object>();
+    t.add(136);
+    temp.add(t);
+    t = new ArrayList<Object>();
+    t.add(172);
+    temp.add(t);
+    
+    Script out1_script = new Script(temp);
+    System.out.println(bytesToHex(out1_script.encode()));
+
+    byte[] out2_pkb_hash = PublicKey.toPublicKey(publicKey).encode(true, true);
+    ArrayList<Object> t2 = new ArrayList<Object>();
+    ArrayList<ArrayList<Object>> temp2 = new  ArrayList<ArrayList<Object>>();
+    t2.add(118);
+    temp2.add(t2);
+    t2 = new ArrayList<Object>();
+    t2.add(169);
+    temp2.add(t2);
+    t2 = new ArrayList<Object>();
+    for(byte by : out2_pkb_hash){
+        t2.add((byte)by);
+    }
+    // System.out.println(Arrays.toString(t.toArray()));
+    temp2.add(t2);
+    t2 = new ArrayList<Object>();
+    t2.add(136);
+    temp2.add(t2);
+    t2 = new ArrayList<Object>();
+    t2.add(172);
+    temp2.add(t2);
+    Script out2_script = new Script(temp2);
+    System.out.println(bytesToHex(out2_script.encode()));
+    
+    TxOut tx_out1 = new TxOut(50000, out1_script);
+    TxOut tx_out2 = new TxOut(47500, out2_script);
+
+    ArrayList<TxOut> out_scripts = new ArrayList<TxOut>();
+    out_scripts.add(tx_out1);
+    out_scripts.add(tx_out2);
+    
+    ArrayList<TxIn> tx_in_scripts = new ArrayList<TxIn>();
+    tx_in_scripts.add(tx_in);
+
+    Tx tx = new Tx(1, tx_in_scripts, out_scripts);
+
+    ArrayList<Object> t3 = new ArrayList<Object>();
+    ArrayList<ArrayList<Object>> temp3 = new  ArrayList<ArrayList<Object>>();
+    t3.add(118);
+    temp3.add(t3);
+    t3 = new ArrayList<Object>();
+    t3.add(169);
+    temp3.add(t3);
+    t3 = new ArrayList<Object>();
+    for(byte by : out2_pkb_hash){
+        t3.add((byte)by);
+    }
+    // System.out.println(Arrays.toString(t.toArray()));
+    temp3.add(t3);
+    t3 = new ArrayList<Object>();
+    t3.add(136);
+    temp3.add(t3);
+    t3 = new ArrayList<Object>();
+    t3.add(172);
+    temp3.add(t3);
+
+    Script source_script = new Script(temp3);
+    System.out.println("recall out2_pkb_hash is just raw bytes of the hash of public_key: "+bytesToHex(out2_pkb_hash));
+    System.out.println(bytesToHex(source_script.encode()));
+
+    TxIn.setPrevScript(tx_in, source_script);
+    byte[] message = tx.encode(true, 0);
+    System.out.println(bytesToHex(message));
+    // Object re[] = PublicKey.gen_key_pair();
+    // System.out.println(re[0]);
+    // System.out.println(re[1]);
     // ParseBlockChain e = new ParseBlockChain();
     // e.get();
+    // 0100000001b2364d6ba4cbfd3dad8d6dc8dde1095f959bac4ee4ee7c4b8ab99fc885503246010000001976a9144b3518229b0d3554fe7cd3796ade632aff3069d888acffffffff0250c30000000000001976a91475b0c9fc784ba2ea0839e3cdf2669495cac6707388ac8cb90000000000001976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac0000000001000000
+    // 0100000001b2364d6ba4cbfd3dad8d6dc8dde1095f959bac4ee4ee7c4b8ab99fc8855032460100000000ff0000000250c30000000000001976a91475b0c9fc784ba2ea0839e3cdf2669495cac6707388ac8cb90000000000001976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac0000000001000000
+    // 0100000001b2364d6ba4cbfd3dad8d6dc8dde1095f959bac4ee4ee7c4b8ab99fc8855032460100000000ff0000000250c30000000000001976a91475b0c9fc784ba2ea0839e3cdf2669495cac6707388ac8cb90000000000001976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac0000000001000000
   }
 }
+
