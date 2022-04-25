@@ -6,6 +6,7 @@ import ecc.Curve;
 import ecc.Point;
 import ecc.Generator;
 import ecc.PublicKey;
+import transaction.TxIn;
 // import scraper.ParseBlockChain;
 
 public class BTC{
@@ -85,7 +86,7 @@ public class BTC{
     System.out.println("Time : "+duration/1000000+" ms");
     System.out.println("-------------------------------------------------------------------");
 
-    String secretKey_string = "1";
+    String secretKey_string = "Andrej is cool :P";
     BigInteger secretKey = new BigInteger(toHex(secretKey_string),16);
     startTime = System.nanoTime();
     Point publicKey = G.multiply(secretKey);
@@ -97,17 +98,42 @@ public class BTC{
     System.out.println("Time : "+duration/1000000+" ms");
     System.out.println("-------------------------------------------------------------------");
 
+    String secretKey_string2 = "Andrej's Super Secret 2nd Wallet";
+    BigInteger secretKey2 = new BigInteger(toHex(secretKey_string2),16);
     startTime = System.nanoTime();
-    String pk = PublicKey.toPublicKey(publicKey).address("test", true);
+    Point publicKey2 = G.multiply(secretKey2);
+    endTime = System.nanoTime();
+    duration = (endTime - startTime);
+    System.out.println("Secret Key : "+secretKey_string2);
+    System.out.println("Public Key : \nx : "+publicKey2.x+"\ny : "+publicKey2.y);
+    System.out.println("Public Key generated is on curve : \033[92m" + publicKey2.verify_on_curve()+"\033[0m");
+    System.out.println("Time : "+duration/1000000+" ms");
+    System.out.println("-------------------------------------------------------------------");
+
+    startTime = System.nanoTime();
+    String pbk1 = PublicKey.toPublicKey(publicKey).address("test", true);
     endTime = System.nanoTime();
     duration = (endTime - startTime);
     
-    System.out.println("\nBitcoin addr : "+pk);
-    System.out.println("Length of addr : "+pk.length());
+    System.out.println("\nBitcoin addr : "+pbk1);
+    System.out.println("Length of addr : "+pbk1.length());
     System.out.println("Time Taken to Generate : "+duration/1000000+" ms");
     System.out.println("-------------------------------------------------------------------");
 
+    startTime = System.nanoTime();
+    String pbk2 = PublicKey.toPublicKey(publicKey2).address("test", true);
+    endTime = System.nanoTime();
+    duration = (endTime - startTime);
+    
+    System.out.println("\nBitcoin addr : "+pbk2);
+    System.out.println("Length of addr : "+pbk2.length());
+    System.out.println("Time Taken to Generate : "+duration/1000000+" ms");
+    System.out.println("-------------------------------------------------------------------");
 
+    BigInteger transaction_id = new BigInteger("46325085c89fb98a4b7ceee44eac9b955f09e1ddc86d8dad3dfdcba46b4d36b2", 16);
+    TxIn tx_in = new TxIn(transaction_id.toByteArray(), 1, null, "test");
+
+    
     Object re[] = PublicKey.gen_key_pair();
     System.out.println(re[0]);
     System.out.println(re[1]);
