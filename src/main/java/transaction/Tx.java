@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import java.nio.*;
 import java.util.*;
 
-class helper{
+class Tx_helper{
 
     private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
     protected static String bytesToHex(byte[] bytes) {
@@ -268,12 +268,12 @@ class helper{
             }
             List<Byte> out = new ArrayList<Byte>();
             // Encode metadata
-            byte[] temp = helper.encode_int(this.version,4,"little");
+            byte[] temp = Tx_helper.encode_int(this.version,4,"little");
             for(int i=0; i<temp.length; i++){
                 out.add(temp[i]);
             }
             // Encode Inputs
-            temp = helper.encode_varint(this.tx_ins.size());
+            temp = Tx_helper.encode_varint(this.tx_ins.size());
             for(int i=0; i<temp.length; i++){
                 out.add(temp[i]);
             }
@@ -293,7 +293,7 @@ class helper{
                 }
             }
             // Encode outputs
-            temp = helper.encode_varint(this.tx_outs.size());
+            temp = Tx_helper.encode_varint(this.tx_outs.size());
             for(int i=0; i<temp.length; i++){
                 out.add(temp[i]);
             }
@@ -303,12 +303,12 @@ class helper{
                 }
             }
             // Encode Locktime
-            for(byte b : helper.encode_int(this.locktime,4,"little")){
+            for(byte b : Tx_helper.encode_int(this.locktime,4,"little")){
                 out.add(b);
             }
             // Encode Sig Index
             if(sig_index != -1){
-                for(byte b : helper.encode_int(1,4,"little")){
+                for(byte b : Tx_helper.encode_int(1,4,"little")){
                     out.add(b);
                 }
             }

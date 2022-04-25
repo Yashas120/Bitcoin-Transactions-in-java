@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.*;
 
-class helper{
+class TXIn_helper{
 
     private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
     protected static String bytesToHex(byte[] bytes) {

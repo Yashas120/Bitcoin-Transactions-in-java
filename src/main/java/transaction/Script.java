@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.*;
 
-class helper{
+class script_helper{
 
     private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
     protected static String bytesToHex(byte[] bytes) {
@@ -219,14 +219,14 @@ public class Script{
         ArrayList<Byte> out = new ArrayList<Byte>();
         for(ArrayList<Object> cmd : this.cmds){
             int length = cmd.size();
-            if(cmd.get(0) instanceof Integer && length == 1){
+            if((cmd.get(0) instanceof Integer || cmd.get(0))&& length == 1){
                 // It is an instance of int
-                for(byte i : helper.encode_int((int)cmd.get(0),1,"little")){
+                for(byte i : script_helper.encode_int((int)cmd.get(0),1,"little")){
                     out.add(i);
                 }
             }
             else if(length < 75 && cmd.get(0) instanceof Byte){
-                    for(byte i : helper.encode_int(length,1,"little")){
+                    for(byte i : script_helper.encode_int(length,1,"little")){
                         out.add(i);
                     }
             }
@@ -235,7 +235,7 @@ public class Script{
                 }
             }
         int ind = 0;
-        for(byte p: helper.encode_varint(out.size())){
+        for(byte p: script_helper.encode_varint(out.size())){
             out.add(ind++,p);
         }
         byte[] bytes = new byte[out.size()];

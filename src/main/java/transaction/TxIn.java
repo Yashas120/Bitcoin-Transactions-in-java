@@ -227,11 +227,11 @@ public class TxIn{
 
     public byte[] encode(int script_override) throws Exception{
         List<Byte> out = new ArrayList<Byte>();
-        helper.reverse(this.prev_tx);
+        TXIn_helper.reverse(this.prev_tx);
         for(byte p : this.prev_tx){
             out.add(p);
         }
-        for(byte p : helper.encode_int(this.prev_index,4,"little")){
+        for(byte p : TXIn_helper.encode_int(this.prev_index,4,"little")){
             out.add(p);
         }
 
@@ -241,7 +241,7 @@ public class TxIn{
             }
         }
         else if(script_override == 1){
-            Tx tx = new Tx();
+            // Tx tx = new Tx();
 
             // Check this for the TxFetcher
 
@@ -259,7 +259,7 @@ public class TxIn{
         else{
             throw new Exception("script_override must be one of None|True|False\n");
         }
-        for(byte p : helper.encode_int(this.sequence,4,"little")){
+        for(byte p : TXIn_helper.encode_int(this.sequence,4,"little")){
             out.add(p);
         }
         byte[] bytes = new byte[out.size()];

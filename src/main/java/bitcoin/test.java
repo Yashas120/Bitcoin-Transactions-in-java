@@ -1,4 +1,4 @@
-
+package bitcoin;
 import transaction.TxIn;
 import transaction.TxOut;
 import transaction.Script;
@@ -69,7 +69,6 @@ public class test{
         Script out1_script = new Script(temp);
         System.out.println(bytesToHex(out1_script.encode()));
         assert bytesToHex(out1_script.encode()).equals("1976a91475b0c9fc784ba2ea0839e3cdf2669495cac6707388ac");
-
         // the second output will go back to us
         byte[] out2_pkb_hash = PublicKey.toPublicKey(public_key).encode(true,true);
         temp = new  ArrayList<ArrayList<Object>>();
@@ -90,7 +89,7 @@ public class test{
         t.add(172);
         temp.add(t);
         Script out2_script = new Script(temp);
-        System.out.println(bytesToHex(out2_script.encode()));
+        System.out.println(out2_script.encode());
         assert bytesToHex(out2_script.encode()).equals("1976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac");
 
         TxOut.setScript(tx_out1, out1_script);

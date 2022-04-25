@@ -102,8 +102,8 @@ public class BTC{
     endTime = System.nanoTime();
     duration = (endTime - startTime);
     
-    System.out.println("\nPublic Key : "+pk);
-    System.out.println("Length of Public Key : "+pk.length());
+    System.out.println("\nBitcoin addr : "+pk);
+    System.out.println("Length of addr : "+pk.length());
     System.out.println("Time Taken to Generate : "+duration/1000000+" ms");
     System.out.println("-------------------------------------------------------------------");
 
