@@ -219,7 +219,9 @@ public class Script{
         ArrayList<Byte> out = new ArrayList<Byte>();
         for(ArrayList<Object> cmd : this.cmds){
             int length = cmd.size();
-            System.out.println(cmd.size());
+            // System.out.println(cmd.size());
+            // System.out.println(cmd.get(0) instanceof Integer);
+            // System.out.println(cmd.get(0));
             if((cmd.get(0) instanceof Integer) && length == 1){
                 // It is an instance of int
                 // System.out.println(cmd.get(0));
