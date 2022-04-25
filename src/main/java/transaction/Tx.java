@@ -263,9 +263,9 @@ class Tx_helper{
         }
 
         public byte[] encode(boolean force_legacy, int sig_index) throws Exception{
-            if(!(sig_index > -1)){
-                sig_index = -1;
-            }
+            // if(!(sig_index > -1)){
+            //     sig_index = -1;
+            // }
             List<Byte> out = new ArrayList<Byte>();
             // Encode metadata
             byte[] temp = Tx_helper.encode_int(this.version,4,"little");

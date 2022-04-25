@@ -99,7 +99,7 @@ public class test{
 
         ArrayList<TxIn> ti = new ArrayList<TxIn>();
         ti.add(tx_in);
-
+        System.out.println("---------------------------\n\n\n");
         ArrayList<TxOut> to = new ArrayList<TxOut>();
         Script source_script = new Script(temp);
         TxIn.setPrevScript(tx_in, source_script);
