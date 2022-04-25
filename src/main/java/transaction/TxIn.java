@@ -50,8 +50,34 @@ class helper{
         return ByteBuffer.wrap(conv).getLong();
     }
 
-    static byte[] encode_int(int i, int nbytes, String encoding){ 
-        BigInteger bigInt = BigInteger.valueOf(i);      
+    static byte[] encode_int(long sequence, int nbytes, String encoding){ 
+        BigInteger bigInt = BigInteger.valueOf(sequence);      
+        byte[] s = bigInt.toByteArray();
+        byte[] out = new byte[nbytes];
+        reverse(s);
+        if(encoding == "little"){
+            for(int ind=0; ind<nbytes; ind++){
+                if(ind<s.length){
+                    out[ind] = s[ind];
+                    continue;
+                }
+                out[ind] = 0;
+            }
+        }
+        else{
+            for(int ind=0; ind < nbytes; ind++){
+                if(ind < nbytes - s.length){
+                    out[ind] = 0;
+                    continue;
+                }
+                out[ind] = s[nbytes - ind - 1];
+            }
+        }
+        return out;
+    }
+
+    static byte[] encode_int(BigInteger sequence, int nbytes, String encoding){ 
+        BigInteger bigInt = sequence;     
         byte[] s = bigInt.toByteArray();
         byte[] out = new byte[nbytes];
         reverse(s);
@@ -208,15 +234,15 @@ public class TxIn{
     byte[] prev_tx;
     int prev_index;
     Script script_sig;
-    int sequence; 
+    BigInteger sequence; 
     String net;
-    Script prev_tx_script_pubkey;
+    public Script prev_tx_script_pubkey;
 
     public TxIn(byte[] pt, int pi, Script ss, String net){
         this.prev_tx = pt.clone();
         this.prev_index = pi;
         this.script_sig = ss;
-        this.sequence = 0xffffffff;
+        this.sequence = new BigInteger("ffffffff",16);
         this.net = net;
     }
 
@@ -265,6 +291,7 @@ public class TxIn{
         else{
             throw new Exception("script_override must be one of None|True|False\n");
         }
+        
         for(byte p : helper.encode_int(this.sequence,4,"little")){
             out.add(p);
         }

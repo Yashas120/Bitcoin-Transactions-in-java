@@ -142,7 +142,7 @@ public class BTC{
     System.out.println("\nBitcoin addr : "+pbk2);
     System.out.println("Length of addr : "+pbk2.length());
     System.out.println("Time Taken to Generate : "+duration/1000000+" ms");
-    System.out.println("-------------------------------------------------------------------");
+    System.out.println("-------------------------------------------------------------------\n");
 
     BigInteger transaction_id = new BigInteger("46325085c89fb98a4b7ceee44eac9b955f09e1ddc86d8dad3dfdcba46b4d36b2", 16);
     TxIn tx_in = new TxIn(transaction_id.toByteArray(), 1, null, "test");
@@ -232,15 +232,16 @@ public class BTC{
 
     TxIn.setPrevScript(tx_in, source_script);
     byte[] message = tx.encode(true, 0);
-    System.out.println(bytesToHex(message));
+    System.out.println("\nmessage : "+bytesToHex(message));
+    System.out.println("-------------------------------------------------------------------\n");
     // Object re[] = PublicKey.gen_key_pair();
     // System.out.println(re[0]);
     // System.out.println(re[1]);
     // ParseBlockChain e = new ParseBlockChain();
     // e.get();
-    // 0100000001b2364d6ba4cbfd3dad8d6dc8dde1095f959bac4ee4ee7c4b8ab99fc885503246010000001976a9144b3518229b0d3554fe7cd3796ade632aff3069d888acffffffff0250c30000000000001976a91475b0c9fc784ba2ea0839e3cdf2669495cac6707388ac8cb90000000000001976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac0000000001000000
-    // 0100000001b2364d6ba4cbfd3dad8d6dc8dde1095f959bac4ee4ee7c4b8ab99fc8855032460100000000ff0000000250c30000000000001976a91475b0c9fc784ba2ea0839e3cdf2669495cac6707388ac8cb90000000000001976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac0000000001000000
-    // 0100000001b2364d6ba4cbfd3dad8d6dc8dde1095f959bac4ee4ee7c4b8ab99fc8855032460100000000ff0000000250c30000000000001976a91475b0c9fc784ba2ea0839e3cdf2669495cac6707388ac8cb90000000000001976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac0000000001000000
+
+    // 0100000001b2364d6ba4cbfd3dad8d6dc8dde1095f959bac4ee4ee7c4b8ab99fc88550324601000000 1976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac ffffffff0250c30000000000001976a91475b0c9fc784ba2ea0839e3cdf2669495cac6707388ac8cb90000000000001976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac0000000001000000
+    // 0100000001b2364d6ba4cbfd3dad8d6dc8dde1095f959bac4ee4ee7c4b8ab99fc88550324601000000 1976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac ffffffff0250c30000000000001976a91475b0c9fc784ba2ea0839e3cdf2669495cac6707388ac8cb90000000000001976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac0000000001000000
   }
 }
 

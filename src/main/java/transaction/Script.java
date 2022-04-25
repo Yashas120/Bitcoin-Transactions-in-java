@@ -224,14 +224,15 @@ public class Script{
             // System.out.println(cmd.get(0));
             if((cmd.get(0) instanceof Integer) && length == 1){
                 // It is an instance of int
-                // System.out.println(cmd.get(0));
-                for(byte i : script_helper.encode_int((int)cmd.get(0),1,"little")){
+                byte t[] = script_helper.encode_int((int)cmd.get(0),1,"little");
+                for(byte i : t){
                     out.add(i);
                 }
             }
             else if(length < 75 && cmd.get(0) instanceof Byte){
                 // System.out.println(cmd.toString());
-                    for(byte i : script_helper.encode_int(length,1,"little")){
+                    byte[] t = script_helper.encode_int(length,1,"little");
+                    for(byte i : t){
                         out.add(i);
                     }
                     for(Object i : cmd.toArray()){
@@ -249,10 +250,10 @@ public class Script{
             out.add(ind++,p);
         }
         byte[] bytes = new byte[out.size()];
-                int j=0;
-                for(Byte b: out.toArray(new Byte[0])) {
-                    bytes[j++] = b.byteValue();
-                }
-            return bytes;
+        int j=0;
+        for(Byte b: out.toArray(new Byte[0])) {
+            bytes[j++] = b.byteValue();
+        }
+        return bytes;
     }
 }
