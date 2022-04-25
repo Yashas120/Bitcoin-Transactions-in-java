@@ -219,20 +219,28 @@ public class Script{
         ArrayList<Byte> out = new ArrayList<Byte>();
         for(ArrayList<Object> cmd : this.cmds){
             int length = cmd.size();
-            if((cmd.get(0) instanceof Integer || cmd.get(0))&& length == 1){
+            System.out.println(cmd.size());
+            if((cmd.get(0) instanceof Integer) && length == 1){
                 // It is an instance of int
+                // System.out.println(cmd.get(0));
                 for(byte i : script_helper.encode_int((int)cmd.get(0),1,"little")){
                     out.add(i);
                 }
             }
             else if(length < 75 && cmd.get(0) instanceof Byte){
+                // System.out.println(cmd.toString());
                     for(byte i : script_helper.encode_int(length,1,"little")){
                         out.add(i);
+                    }
+                    for(Object i : cmd.toArray()){
+                        out.add((byte)i);
                     }
             }
             else{
                     throw new Exception(String.format("cmd of length %d bytes is too long",length));
                 }
+            // System.out.println(out.toString());
+            
             }
         int ind = 0;
         for(byte p: script_helper.encode_varint(out.size())){

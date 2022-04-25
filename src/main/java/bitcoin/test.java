@@ -6,6 +6,7 @@ import transaction.Tx;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import ecc.Curve;
 import ecc.Point;
@@ -49,15 +50,16 @@ public class test{
         byte[] out1_pkb_hash = PublicKey.toPublicKey(public_key2).encode(true,true);
         ArrayList<Object> t = new ArrayList<Object>();
         ArrayList<ArrayList<Object>> temp = new  ArrayList<ArrayList<Object>>();
-        t.add((byte)118);
+        t.add(118);
         temp.add(t);
         t = new ArrayList<Object>();
         t.add(169);
         temp.add(t);
         t = new ArrayList<Object>();
         for(byte by : out1_pkb_hash){
-            t.add(by);
+            t.add((byte)by);
         }
+        System.out.println(Arrays.toString(t.toArray()));
         temp.add(t);
         t = new ArrayList<Object>();
         t.add(136);
