@@ -272,24 +272,31 @@ class Tx_helper{
             for(byte b : temp){
                 out.add(b);
             }
+            System.out.println(Tx_helper.bytesToHex(temp));
             // Encode Inputs
             temp = Tx_helper.encode_varint(this.tx_ins.size());
+
             for(byte b : temp){
                 out.add(b);
             }
+            System.out.println(Tx_helper.bytesToHex(temp));
+
             if(sig_index == -1){
                 for(TxIn tx_in : this.tx_ins){
                     for(byte b : tx_in.encode(3)){
                         out.add(b);
                     }
+                    System.out.println(Tx_helper.bytesToHex(tx_in.encode(3)));
                 }
             }
             else{
                 ListIterator<TxIn> lt = this.tx_ins.listIterator();
                 while(lt.hasNext()){
-                    for(byte b : lt.next().encode((sig_index==lt.nextIndex())?1:2)){
+                    byte[] t = lt.next().encode((sig_index==lt.nextIndex())?1:2);
+                    for(byte b : t){
                         out.add(b);
                     }
+                    System.out.println(Tx_helper.bytesToHex(t));
                 }
             }
             // Encode outputs
@@ -297,21 +304,28 @@ class Tx_helper{
             for(byte b : temp){
                 out.add(b);
             }
+            System.out.println(Tx_helper.bytesToHex(temp));
             for(TxOut tx_out : this.tx_outs){
                 for(byte b : tx_out.encode()){
                     out.add(b);
                 }
+             System.out.println(Tx_helper.bytesToHex(temp));
+
             }
             // Encode Locktime
             for(byte b : Tx_helper.encode_int(this.locktime,4,"little")){
                 out.add(b);
             }
+            System.out.println(Tx_helper.bytesToHex(Tx_helper.encode_int(this.locktime,4,"little")));
+
             // Encode Sig Index
             if(sig_index != -1){
                 for(byte b : Tx_helper.encode_int(1,4,"little")){
                     out.add(b);
                 }
             }
+            System.out.println(Tx_helper.bytesToHex(Tx_helper.encode_int(1,4,"little")));
+            
             byte[] bytes = new byte[out.size()];
             int j=0;
             for(Byte b: out.toArray(new Byte[0])) {
