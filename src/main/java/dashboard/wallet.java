@@ -70,11 +70,49 @@ public class Wallet {
         return false;
     }
 
+    public Float getBalance() throws IOException, InterruptedException, JSONException{
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://blockstream.info/testnet/api/address/" + this.addr))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        // System.out.println((response));
+        JSONObject body = new JSONObject(response.body());
+        // System.out.println(body);
+        JSONObject chain_stats = (JSONObject)(body.get("chain_stats"));
+        // System.out.println(body.get("chain_stats"));
+        // System.out.println(chain_stats.get("tx_count"));
+        this.balance = Float.parseFloat(chain_stats.get("funded_txo_sum").toString()) - Float.parseFloat(chain_stats.get("spent_txo_sum").toString());
+        this.balance *= 0.00000001;
+        return this.balance;
+    }
+
+    public String latestTx() throws IOException, InterruptedException, JSONException {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://blockstream.info/testnet/api/address/" + this.addr + "/txs"))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        // System.out.println((response.body()));
+        JSONArray body = new JSONArray(response.body());
+        // System.out.println(body);
+        
+        JSONObject addr = (JSONObject)(body.getJSONObject(0));
+        // System.out.println(body.get("chain_stats"));
+        // System.out.println(chain_stats.get("tx_count"));
+        return addr.get("txid").toString();
+
+    }
+
     public static void main(String[] args) {
         try{
 
-            Wallet w = new Wallet("test wallet", "vishal");
+            Wallet w = new Wallet("test wallet", "Andrej is cool :P");
             System.out.println("Is new Wallet ? " + w.newWallet());
+            System.out.println("Latest Transaction " + w.latestTx());
+            System.out.println("Balance :" + w.getBalance());
         }
         catch(Exception err){
             System.out.println(err);
