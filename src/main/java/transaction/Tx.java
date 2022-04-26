@@ -5,18 +5,17 @@ import java.math.BigInteger;
 import java.nio.*;
 import java.util.*;
 
+import hashing.Sha;
+
 class Tx_helper{
 
-    private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
-    protected static String bytesToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
-            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+    public static String bytesToHex(byte[] in) {
+        final StringBuilder builder = new StringBuilder();
+        for(byte b : in) {
+            builder.append(String.format("%02x", 0xFF & b));
         }
-        return new String(hexChars);
-    }
+        return builder.toString();
+      }
 
     static protected void reverse(byte[] array) {
         if (array == null) {
@@ -262,7 +261,17 @@ class Tx_helper{
             this.locktime = 0;
         }
 
-        public byte[] encode(boolean force_legacy, int sig_index) throws Exception{
+        public static String id(Tx tx) throws Exception{
+            Sha sha = Sha.getSha();
+            Tx_helper.bytesToHex(tx.encode(-1));
+
+            byte[] res = sha.sha256(sha.sha256(tx.encode(-1)));
+            System.out.println(Tx_helper.bytesToHex(res));
+            helper.reverse(res);
+            return helper.bytesToHex(res);
+        }
+
+        public byte[] encode(int sig_index) throws Exception{
             // if(!(sig_index > -1)){
             //     sig_index = -1;
             // }

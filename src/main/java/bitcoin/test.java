@@ -128,7 +128,7 @@ public class test{
         to.add(tx_out1);
         to.add(tx_out2);
         Tx tx = new Tx(1,ti,to);
-        byte[] message = tx.encode(true, 0);
+        byte[] message = tx.encode(0);
 
         System.out.println("---------------------------\n\n\n");
         System.out.println(bytesToHex(message));
