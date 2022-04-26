@@ -106,6 +106,46 @@ public class Wallet {
 
     }
 
+    public void txBroadcast(String msg) throws IOException, InterruptedException, JSONException{
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://blockstream.info/testnet/api/tx"))
+                .POST(HttpRequest.BodyPublishers.ofString(msg))
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+
+    }
+
+    public void txDetails(String tx) throws IOException, InterruptedException, JSONException {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://blockstream.info/testnet/api/tx/" + tx))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        // System.out.println((response.body()));
+        JSONObject body = new JSONObject(response.body());
+        // System.out.println(body);
+        
+        JSONArray arr = (JSONArray)(body.get("vin"));
+        JSONObject inWallet = (JSONObject)arr.getJSONObject(0);
+        inWallet = (JSONObject)inWallet.get("prevout");
+
+        // System.out.println(body.get("chain_stats"));
+        // System.out.println(chain_stats.get("tx_count"));
+        arr = (JSONArray)(body.get("vout"));
+        JSONObject outWallet1 = (JSONObject)arr.getJSONObject(0);
+        JSONObject outWallet2 = (JSONObject)arr.getJSONObject(1);
+
+        System.out.println("Wallet " + inWallet.get("scriptpubkey_address").toString() + " sent " + Float.parseFloat(inWallet.get("value").toString()) * 1E-8 + "BTC");
+        System.out.println("Wallet " + outWallet1.get("scriptpubkey_address").toString() + " received " + Float.parseFloat(outWallet1.get("value").toString()) * 1E-8 + "BTC");
+        System.out.println("Wallet " + outWallet2.get("scriptpubkey_address").toString() + " received " + Float.parseFloat(outWallet2.get("value").toString()) * 1E-8 + "BTC");
+        System.out.println("Fee : " + Float.parseFloat(body.get("fee").toString()) * 1E-8 + "BTC");
+
+    }
+
     public static void main(String[] args) {
         try{
 
@@ -113,6 +153,8 @@ public class Wallet {
             System.out.println("Is new Wallet ? " + w.newWallet());
             System.out.println("Latest Transaction " + w.latestTx());
             System.out.println("Balance :" + w.getBalance());
+            w.txDetails("586593509c188c9334eb134d54f8ff0b7245af1486e2104dfdf9ce7fc74636b8");
+            w.txBroadcast("010000000269adb42422fb021f38da0ebe12a8d2a14c0fe484bcb0b7cb365841871f2d5e24000000006a4730440220199a6aa56306cebcdacd1eba26b55eaf6f92eb46eb90d1b7e7724bacbe1d19140220101c0d46e033361c60536b6989efdd6fa692265fcda164676e2f49885871038a0121039ac8bac8f6d916b8a85b458e087e0cd07e6a76a6bfdde9bb766b17086d9a5c8affffffff69adb42422fb021f38da0ebe12a8d2a14c0fe484bcb0b7cb365841871f2d5e24010000006b48304502210084ec4323ed07da4af6462091b4676250c377527330191a3ff3f559a88beae2e2022077251392ec2f52327cb7296be89cc001516e4039badd2ad7bbc950c4c1b6d7cc012103b9b554e25022c2ae549b0c30c18df0a8e0495223f627ae38df0992efb4779475ffffffff0118730100000000001976a9140ce17649c1306c291ca9e587f8793b5b06563cea88ac00000000");
         }
         catch(Exception err){
             System.out.println(err);
