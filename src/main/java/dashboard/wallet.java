@@ -9,7 +9,7 @@ import ecc.Generator;
 import ecc.Point;
 import ecc.PublicKey;
 
-public class Wallet {
+public class Wallet{
 
     String name;
     String secretKey;
@@ -24,10 +24,12 @@ public class Wallet {
     Curve bitcoinCurve = new Curve(p,a,b);
     Point G = new Point(bitcoinCurve,x,y);
     Generator bitcoinGenerator = new Generator(G, n);
+    
     public static String toHex(String arg) {
         return String.format("%040x", new BigInteger(1, arg.getBytes(Charset.forName("UTF-8"))));
-      }
-    Wallet( String name, String key){
+    }
+
+    public Wallet( String name, String key){
         this.name = name;
         this.secretKey = key;
         this.balance = 0;

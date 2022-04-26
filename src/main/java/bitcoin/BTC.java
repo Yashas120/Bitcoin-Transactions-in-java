@@ -101,8 +101,10 @@ public class BTC{
     System.out.println("Time : "+duration/1000000+" ms");
     System.out.println("-------------------------------------------------------------------");
 
-    String secretKey_string = "Andrej is cool :P";
+    String secretKey_string = "12345678900987654321";
+    // String secretKey_string = "vishal";
     BigInteger secretKey = new BigInteger(toHex(secretKey_string),16);
+    System.out.println(secretKey);
     startTime = System.nanoTime();
     Point publicKey = G.multiply(secretKey);
     endTime = System.nanoTime();
@@ -113,8 +115,9 @@ public class BTC{
     System.out.println("Time : "+duration/1000000+" ms");
     System.out.println("-------------------------------------------------------------------");
 
-    String secretKey_string2 = "Andrej's Super Secret 2nd Wallet";
+    String secretKey_string2 = "1234567890098765432112345678900";
     BigInteger secretKey2 = new BigInteger(toHex(secretKey_string2),16);
+    System.out.println(secretKey2);
     startTime = System.nanoTime();
     Point publicKey2 = G.multiply(secretKey2);
     endTime = System.nanoTime();
@@ -131,6 +134,7 @@ public class BTC{
     duration = (endTime - startTime);
     
     System.out.println("\nBitcoin addr : "+pbk1);
+    System.out.println("Link : https://www.blockchain.com/btc-testnet/address/"+pbk1);
     System.out.println("Length of addr : "+pbk1.length());
     System.out.println("Time Taken to Generate : "+duration/1000000+" ms");
     System.out.println("-------------------------------------------------------------------");
@@ -141,11 +145,12 @@ public class BTC{
     duration = (endTime - startTime);
     
     System.out.println("\nBitcoin addr : "+pbk2);
+    System.out.println("Link : https://www.blockchain.com/btc-testnet/address/"+pbk2);
     System.out.println("Length of addr : "+pbk2.length());
     System.out.println("Time Taken to Generate : "+duration/1000000+" ms");
     System.out.println("-------------------------------------------------------------------\n");
 
-    BigInteger transaction_id = new BigInteger("46325085c89fb98a4b7ceee44eac9b955f09e1ddc86d8dad3dfdcba46b4d36b2", 16);
+    BigInteger transaction_id = new BigInteger("aaf62939216c3c6987756682a57cf83ea5a11536e4369a42358241e447c3dbe1", 16);
     TxIn tx_in = new TxIn(transaction_id.toByteArray(), 1, null, "test");
     
     byte[] out1_pkb_hash = PublicKey.toPublicKey(publicKey2).encode(true, true);
@@ -194,8 +199,8 @@ public class BTC{
     Script out2_script = new Script(temp2);
     System.out.println("out2_script : "+bytesToHex(out2_script.encode()));
     
-    TxOut tx_out1 = new TxOut(50000, out1_script);
-    TxOut tx_out2 = new TxOut(47500, out2_script);
+    TxOut tx_out1 = new TxOut(5000, out1_script);
+    TxOut tx_out2 = new TxOut(4750, out2_script);
 
     ArrayList<TxOut> out_scripts = new ArrayList<TxOut>();
     out_scripts.add(tx_out1);
@@ -289,3 +294,6 @@ public class BTC{
 
 // 55eddf1c8ef552ef74945edd3b62b148a896e0015775153193e6b0657a6cb5c3
 // 96de260bfb74be8adee650636a94abe9f6f2e3e67574111092aacae7f60c00ef
+
+// 47304402205a002f19d40a32765829fbd7a568f42673cc71ca3bf9299c2cebe9ea08d746ee0220506fbd9f03d488e2c34a431b8973aab5687003960c8b54d5eaccc4d2fb97713e012103b2e02947f1c6beb1d588405a09a51f9b1bf9a5582e3292d4cd09861bc10ba5ef
+// 010000000146325085c89fb98a4b7ceee44eac9b955f09e1ddc86d8dad3dfdcba46b4d36b20100000069473044022046b9df85b5ee399291e32d21b5f7784632a2f64d6ab5931d96e6b2d98bfe32d00220143106fa5b4fe267aaed4ec6522c1a86a151b1ede3ec49b2b50f20bc3da8e37401200287de41a0d1520a709076f7de86509df879c98e71da6b87a2de10c991f6cd94ffffffff0288130000000000001976a9148510ed509407c47cca6c6dca08eea0535150683988ac8e120000000000001976a914a02ca15899fec6312a0578c7e27ecb50d6982a1688ac00000000

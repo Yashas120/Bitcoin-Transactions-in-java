@@ -149,9 +149,9 @@ public class Signature {
         BigDecimal sk1 = BigDecimal.valueOf(Math.random()).multiply(term2).add(term3);
 
         // System.out.println("decimal sk : "+sk1);
-        // BigInteger sk = sk1.toBigInteger();
+        BigInteger sk = sk1.toBigInteger();
         // System.out.println("integer sk : "+sk);
-        BigInteger sk = new BigInteger("2");
+        // BigInteger sk = new BigInteger("2");
         Point P = G.multiply(sk);
         
         BigInteger rt = P.x;
