@@ -296,16 +296,22 @@ public class Tx {
                 for(byte b : tx_in.encode(3)){
                     out.add(b);
                 }
+                System.out.println("TX Script_SIG 0");
+                System.out.println(Tx_helper.bytesToHex(tx_in.encode(3)));
+
             }
+
         }
         else{
             int counter = 0;
             for (TxIn script: this.tx_ins){
-                int sig_idx = sig_index==counter ? 1 : 0;
+                int sig_idx = sig_index==counter ? 1 : 2;
                 byte[] t = script.encode(sig_idx);
                 for (byte b : t){
                     out.add(b);
                 }
+                System.out.println("TX Script_SIG");
+                System.out.println(Tx_helper.bytesToHex(script.encode(sig_idx)));
                 // System.out.println("sig_index!=-1 : "+Tx_helper.bytesToHex(t));
                 counter++;
             }

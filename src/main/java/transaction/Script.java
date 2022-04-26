@@ -217,6 +217,7 @@ public class Script{
     }
     public byte[] encode() throws Exception{
         ArrayList<Byte> out = new ArrayList<Byte>();
+        
         for(ArrayList<Object> cmd : this.cmds){
             int length = cmd.size();
             // System.out.println(cmd.size());

@@ -18,18 +18,31 @@ class helper{
         return new String(hexChars);
     }
 
-    static protected byte[] reverse(byte[] array) {
-        int i = 0;
-        int j = array.length - 1;
-        byte tmp;
-        while (j > i) {
-            tmp = array[j];
-            array[j] = array[i];
-            array[i] = tmp;
-            j--;
-            i++;
+    protected static byte[] Bytetobyte(ArrayList<Byte> s){
+        byte[] bytes = new byte[s.size()];
+        int j=0;
+        for(Byte b: s.toArray(new Byte[0])) {
+            bytes[j++] = b.byteValue();
         }
-        return array;
+        return bytes;
+    }
+
+    static protected byte[] reverse(byte[] array) {
+        // Byte[] bytes = new Byte[array.length];
+        // int i = 0;
+        // for (byte b : array) bytes[i++] = b;
+        // List<Byte> byteList = Arrays.asList(bytes); 
+        // Collections.reverse(byteList);
+        // System.out.println("Reverse");
+
+        // System.out.println(byteList);
+        // Collections.reverse(byteList);
+        // return Bytetobyte( byteList);
+        byte[] arr = new byte[array.length];
+        for(int i=0; i<array.length; i++){
+            arr[i] = array[array.length-i-1];
+        }
+        return arr;
     }
     static protected byte[] hexStringToByteArray(String s) {
         int len = s.length();
@@ -239,7 +252,22 @@ public class TxIn{
     public Script prev_tx_script_pubkey;
 
     public TxIn(byte[] pt, int pi, Script ss, String net){
-        this.prev_tx = pt.clone();
+        int start_idx = 0;
+        for(int i=0; i<pt.length; i++){
+            if(pt[i] == (byte)0x0){
+            continue;
+            }
+            else{
+            start_idx = i;
+            break;
+            }
+        }
+        this.prev_tx = new byte[pt.length-start_idx];
+      
+        int idx = 0;
+        for(int i=start_idx; i<this.prev_tx.length; i++){
+            this.prev_tx[idx++] = pt[i];
+        }
         this.prev_index = pi;
         this.script_sig = ss;
         this.sequence = new BigInteger("ffffffff",16);
@@ -256,8 +284,8 @@ public class TxIn{
 
     public byte[] encode(int script_override) throws Exception{
         List<Byte> out = new ArrayList<Byte>();
-        this.prev_tx = helper.reverse(this.prev_tx);
-        for(byte p : this.prev_tx){
+        System.out.println(helper.bytesToHex(this.prev_tx));
+        for(byte p : helper.reverse(this.prev_tx)){
             out.add(p);
         }
         for(byte p : helper.encode_int(this.prev_index,4,"little")){

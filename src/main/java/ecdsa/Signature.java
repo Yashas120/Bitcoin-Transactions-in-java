@@ -62,6 +62,21 @@ public class Signature {
         for(;i<temp.length; i++){
             nb.add(temp[i]);
         }
+        // int start_idx = 0;
+        // byte []xBytes_temp = n.toByteArray();
+        
+        // for(int i=0; i<xBytes_temp.length; i++){
+        //     if(xBytes_temp[i] == (byte)0x0){
+        //         continue;
+        //     }
+        //     else{
+        //         start_idx = i;
+        //         break;
+        //     }
+        // }
+        // byte []xBytes_new_temp = new byte[32];
+        // xBytes_new_temp = 
+
         if(nb.get(0) >= 0x80){
             nb.add(0,(byte)0x00);
         }
