@@ -160,7 +160,6 @@ public class BTC{
     for(byte by : out1_pkb_hash){
         t.add((byte)by);
     }
-    // System.out.println(Arrays.toString(t.toArray()));
     temp.add(t);
     t = new ArrayList<Object>();
     t.add(136);
@@ -170,7 +169,7 @@ public class BTC{
     temp.add(t);
     
     Script out1_script = new Script(temp);
-    System.out.println(bytesToHex(out1_script.encode()));
+    System.out.println("out1_script : "+bytesToHex(out1_script.encode()));
 
     byte[] out2_pkb_hash = PublicKey.toPublicKey(publicKey).encode(true, true);
     ArrayList<Object> t2 = new ArrayList<Object>();
@@ -193,7 +192,7 @@ public class BTC{
     t2.add(172);
     temp2.add(t2);
     Script out2_script = new Script(temp2);
-    System.out.println(bytesToHex(out2_script.encode()));
+    System.out.println("out2_script : "+bytesToHex(out2_script.encode()));
     
     TxOut tx_out1 = new TxOut(50000, out1_script);
     TxOut tx_out2 = new TxOut(47500, out2_script);
@@ -218,7 +217,6 @@ public class BTC{
     for(byte by : out2_pkb_hash){
         t3.add((byte)by);
     }
-    // System.out.println(Arrays.toString(t.toArray()));
     temp3.add(t3);
     t3 = new ArrayList<Object>();
     t3.add(136);
@@ -229,9 +227,10 @@ public class BTC{
 
     Script source_script = new Script(temp3);
     System.out.println("recall out2_pkb_hash is just raw bytes of the hash of public_key: "+bytesToHex(out2_pkb_hash));
-    System.out.println(bytesToHex(source_script.encode()));
+    System.out.println("source_script : "+bytesToHex(source_script.encode()));
 
-    TxIn.setPrevScript(tx_in, source_script);
+    tx_in.setPrevScript(source_script);
+
     byte[] message = tx.encode(0);
     System.out.println("\nmessage : "+bytesToHex(message));
     System.out.println("-------------------------------------------------------------------\n");
@@ -243,9 +242,12 @@ public class BTC{
 
     byte[] sig_bytes = sig.encode();
     
-    byte[] sig_bytes_and_type = new byte[sig_bytes.length+1];
-    System.arraycopy(sig_bytes,0,sig_bytes_and_type,0,sig_bytes.length);
-    sig_bytes_and_type[sig_bytes.length] = (byte)0x01;
+    byte [] sig_bytes_and_type = new byte[sig_bytes.length+1];
+    int i = 0;
+    for(i = 0; i<sig_bytes.length; i++){
+      sig_bytes_and_type[i] = sig_bytes[i];
+    }
+    sig_bytes_and_type[i] = (byte)0x01;
 
     byte[] pubkey_bytes = PublicKey.toPublicKey(publicKey).encode(true, false);
 
@@ -260,14 +262,16 @@ public class BTC{
       t3.add(sbt);
     }
     par.add(t3);
+
     Script script_sig = new Script(par);
-    TxIn.setScript(tx_in, script_sig);
+    tx_in.setScript(script_sig);
 
     System.out.println(bytesToHex(tx.encode(-1)));
     System.out.println(tx.encode(-1).length);
 
     System.out.println("-------------------------------------------------------------------\n");
-    System.out.println(Tx.id(tx));
+    // System.out.println(bytesToHex(tx.encode(-1)));
+    System.out.println("id : "+tx.id());
 
     // Object re[] = PublicKey.gen_key_pair();
     // System.out.println(re[0]);

@@ -246,12 +246,12 @@ public class TxIn{
         this.net = net;
     }
 
-    public static void setScript(TxIn tx, Script sp){
-        tx.script_sig = sp;
+    public void setScript(Script sp){
+        this.script_sig = sp;
     }
 
-    public static void setPrevScript(TxIn tx, Script sp){
-        tx.prev_tx_script_pubkey = sp;
+    public void setPrevScript(Script sp){
+        this.prev_tx_script_pubkey = sp;
     }
 
     public byte[] encode(int script_override) throws Exception{

@@ -212,8 +212,8 @@ public class TxOut{
         this.amount = amt;
         this.script_pubkey = sp;
     }
-    public static void setScript(TxOut tx, Script sp){
-        tx.script_pubkey = sp;
+    public void setScript(Script sp){
+        this.script_pubkey = sp;
     }
 
     public byte[] encode() throws Exception{

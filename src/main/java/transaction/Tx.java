@@ -17,9 +17,9 @@ class Tx_helper{
         return builder.toString();
       }
 
-    static protected void reverse(byte[] array) {
+    static protected byte[] reverse(byte[] array) {
         if (array == null) {
-            return;
+            return null;
         }
         int i = 0;
         int j = array.length - 1;
@@ -31,7 +31,9 @@ class Tx_helper{
             j--;
             i++;
         }
+        return array;
     }
+
     static protected byte[] hexStringToByteArray(String s) {
         int len = s.length();
         byte[] data = new byte[len / 2];
@@ -55,7 +57,7 @@ class Tx_helper{
         BigInteger bigInt = BigInteger.valueOf(i);      
         byte[] s = bigInt.toByteArray();
         byte[] out = new byte[nbytes];
-        reverse(s);
+        s = reverse(s);
         if(encoding == "little"){
             for(int ind=0; ind<nbytes; ind++){
                 if(ind<s.length){
@@ -90,12 +92,12 @@ class Tx_helper{
             output.write(encode_int(i, 2,"little"));
             return output.toByteArray();
         }
-        else if (i < 0x100000000l){
+        else if (BigInteger.valueOf(i).compareTo(new BigInteger("100000000",16)) == -1){
             output.write(254);
             output.write(encode_int(i, 4,"little"));
             return output.toByteArray();
         }
-        else if (BigInteger.valueOf(i).compareTo(new BigInteger("10000000000000000",16)) == 1){
+        else if (BigInteger.valueOf(i).compareTo(new BigInteger("10000000000000000",16)) == -1){
             output.write(255);
             output.write(encode_int(i, 8,"little"));
             return output.toByteArray();
@@ -248,113 +250,113 @@ class Tx_helper{
 //     }
 // }
 
-    public class Tx {
-        protected int version;
-        protected ArrayList<TxIn> tx_ins;
-        protected ArrayList<TxOut> tx_outs;
-        protected int locktime;
+public class Tx {
+    public int version;
+    public ArrayList<TxIn> tx_ins;
+    public ArrayList<TxOut> tx_outs;
+    public int locktime;
 
-        public Tx(int v, ArrayList<TxIn> ti, ArrayList<TxOut> to){
-            this.version = v;
-            this.tx_ins = ti;
-            this.tx_outs = to;
-            this.locktime = 0;
-        }
-
-        public static String id(Tx tx) throws Exception{
-            Sha sha = Sha.getSha();
-            Tx_helper.bytesToHex(tx.encode(-1));
-
-            byte[] res = sha.sha256(sha.sha256(tx.encode(-1)));
-            System.out.println(Tx_helper.bytesToHex(res));
-            helper.reverse(res);
-            return helper.bytesToHex(res);
-        }
-
-        public byte[] encode(int sig_index) throws Exception{
-            // if(!(sig_index > -1)){
-            //     sig_index = -1;
-            // }
-            List<Byte> out = new ArrayList<Byte>();
-            // Encode metadata
-            byte[] temp = Tx_helper.encode_int(this.version,4,"little");
-            for(byte b : temp){
-                out.add(b);
-            }
-            // System.out.println(Tx_helper.bytesToHex(temp));
-
-            // Encode Inputs
-            temp = Tx_helper.encode_varint(this.tx_ins.size());
-
-            for(byte b : temp){
-                out.add(b);
-            }
-
-            if(sig_index == -1){
-                for(TxIn tx_in : this.tx_ins){
-                    for(byte b : tx_in.encode(3)){
-                        out.add(b);
-                    }
-                }
-            }
-            else{
-                int counter = 0;
-                for (TxIn script: this.tx_ins){
-                    int sig_idx = sig_index==counter ? 1 : 0;
-                    byte[] t = script.encode(sig_idx);
-                    for (byte b : t){
-                        out.add(b);
-                    }
-                    // System.out.println("sig_index!=-1 : "+Tx_helper.bytesToHex(t));
-                    counter++;
-                }
-                // for (int i =0; i<this.tx_ins.size(); i++){
-                //     System.out.println("tx_ins : "+ this.tx_ins.get(i).prev_tx_script_pubkey);
-                // }
-                // ListIterator<TxIn> lt = this.tx_ins.listIterator();
-                // while(lt.hasNext()){
-                //     byte[] t = lt.next().encode((sig_index==lt.nextIndex())?1:2);
-                //     for(byte b : t){
-                //         out.add(b);
-                //     }
-                //     System.out.println("sig_index!=-1 : "+Tx_helper.bytesToHex(t));
-                // }
-                
-            }
-            // Encode outputs
-            temp = Tx_helper.encode_varint(this.tx_outs.size());
-            for(byte b : temp){
-                out.add(b);
-            }
-            // System.out.println(Tx_helper.bytesToHex(temp));
-            for(TxOut tx_out : this.tx_outs){
-                for(byte b : tx_out.encode()){
-                    out.add(b);
-                }
-            //  System.out.println(Tx_helper.bytesToHex(temp));
-
-            }
-            // Encode Locktime
-            for(byte b : Tx_helper.encode_int(this.locktime,4,"little")){
-                out.add(b);
-            }
-            // System.out.println(Tx_helper.bytesToHex(Tx_helper.encode_int(this.locktime,4,"little")));
-
-            // Encode Sig Index
-            if(sig_index != -1){
-                for(byte b : Tx_helper.encode_int(1,4,"little")){
-                    out.add(b);
-                }
-            }
-            // System.out.println(Tx_helper.bytesToHex(Tx_helper.encode_int(1,4,"little")));
-            
-            byte[] bytes = new byte[out.size()];
-            int j=0;
-            for(Byte b: out.toArray(new Byte[0])) {
-                bytes[j++] = b.byteValue();
-            }
-            return bytes;  
-        }
+    public Tx(int v, ArrayList<TxIn> ti, ArrayList<TxOut> to){
+        this.version = v;
+        this.tx_ins = ti;
+        this.tx_outs = to;
+        this.locktime = 0;
     }
 
+    public String id() throws Exception{
+        Sha sha = Sha.getSha();
+        byte [] tx_encode = this.encode(-1);
+        System.out.println("in id tx_encode : "+Tx_helper.bytesToHex(tx_encode));
+        byte[] res = sha.sha256(sha.sha256(this.encode(-1)));
+        helper.reverse(res);
+        return helper.bytesToHex(res);
+    }
 
+    public byte[] encode(int sig_index) throws Exception{
+        // if(!(sig_index > -1)){
+        //     sig_index = -1;
+        // }
+        List<Byte> out = new ArrayList<Byte>();
+        // Encode metadata
+        byte[] temp = Tx_helper.encode_int(this.version,4,"little");
+        for(byte b : temp){
+            out.add(b);
+        }
+        // System.out.println(Tx_helper.bytesToHex(temp));
+
+        // Encode Inputs
+        temp = Tx_helper.encode_varint(this.tx_ins.size());
+
+        for(byte b : temp){
+            out.add(b);
+        }
+
+        if(sig_index == -1){
+            for(TxIn tx_in : this.tx_ins){
+                for(byte b : tx_in.encode(3)){
+                    out.add(b);
+                }
+            }
+        }
+        else{
+            int counter = 0;
+            for (TxIn script: this.tx_ins){
+                int sig_idx = sig_index==counter ? 1 : 0;
+                byte[] t = script.encode(sig_idx);
+                for (byte b : t){
+                    out.add(b);
+                }
+                // System.out.println("sig_index!=-1 : "+Tx_helper.bytesToHex(t));
+                counter++;
+            }
+            // for (int i =0; i<this.tx_ins.size(); i++){
+            //     System.out.println("tx_ins : "+ this.tx_ins.get(i).prev_tx_script_pubkey);
+            // }
+            // ListIterator<TxIn> lt = this.tx_ins.listIterator();
+            // while(lt.hasNext()){
+            //     byte[] t = lt.next().encode((sig_index==lt.nextIndex())?1:2);
+            //     for(byte b : t){
+            //         out.add(b);
+            //     }
+            //     System.out.println("sig_index!=-1 : "+Tx_helper.bytesToHex(t));
+            // }
+            
+        }
+        // Encode outputs
+        temp = Tx_helper.encode_varint(this.tx_outs.size());
+        for(byte b : temp){
+            out.add(b);
+        }
+        // System.out.println(Tx_helper.bytesToHex(temp));
+        for(TxOut tx_out : this.tx_outs){
+            for(byte b : tx_out.encode()){
+                out.add(b);
+            }
+        //  System.out.println(Tx_helper.bytesToHex(temp));
+
+        }
+        // Encode Locktime
+        for(byte b : Tx_helper.encode_int(this.locktime,4,"little")){
+            out.add(b);
+        }
+        // System.out.println(Tx_helper.bytesToHex(Tx_helper.encode_int(this.locktime,4,"little")));
+
+        // Encode Sig Index
+        if(sig_index != -1){
+            for(byte b : Tx_helper.encode_int(1,4,"little")){
+                out.add(b);
+            }
+        }
+        // System.out.println(Tx_helper.bytesToHex(Tx_helper.encode_int(1,4,"little")));
+        
+        byte[] bytes = new byte[out.size()];
+        int j=0;
+        for(Byte b: out.toArray(new Byte[0])) {
+            bytes[j++] = b.byteValue();
+        }
+        return bytes;  
+    }
+}
+
+// 010000000146325085c89fb98a4b7ceee44eac9b955f09e1ddc86d8dad3dfdcba46b4d36b2010000006a473044022079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798022072e4505d09e2bfe209a0c0b5e1aac1ca435159ec6f1ea563475e16eb250bf7e9012103b9b554e25022c2ae549b0c30c18df0a8e0495223f627ae38df0992efb4779475ffffffff0250c30000000000001976a91475b0c9fc784ba2ea0839e3cdf2669495cac6707388ac8cb90000000000001976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac00000000
+// 010000000146325085c89fb98a4b7ceee44eac9b955f09e1ddc86d8dad3dfdcba46b4d36b2010000006a473044022079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798022072e4505d09e2bfe209a0c0b5e1aac1ca435159ec6f1ea563475e16eb250bf7e9012103b9b554e25022c2ae549b0c30c18df0a8e0495223f627ae38df0992efb4779475ffffffff0250c30000000000001976a91475b0c9fc784ba2ea0839e3cdf2669495cac6707388ac8cb90000000000001976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac00000000

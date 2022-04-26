@@ -151,7 +151,7 @@ public class Signature {
         // System.out.println("decimal sk : "+sk1);
         // BigInteger sk = sk1.toBigInteger();
         // System.out.println("integer sk : "+sk);
-        BigInteger sk = BigInteger.ONE;
+        BigInteger sk = new BigInteger("2");
         Point P = G.multiply(sk);
         
         BigInteger rt = P.x;
