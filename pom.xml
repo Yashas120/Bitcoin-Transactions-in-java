@@ -72,7 +72,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>bitcoin.BTC</mainClass>
+                            <mainClass>bitcoin.CLI</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

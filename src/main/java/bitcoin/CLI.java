@@ -24,6 +24,7 @@ public class CLI {
     public static final String ANSI_YELLOW = "\u001B[33m";
     public static final String ANSI_BLUE = "\u001B[34m";
     public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_WHITE = "\u001B[37m";
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED_BACKGROUND = "\u001B[41m";
     public static final String ANSI_GREEN_BACKGROUND = "\u001B[42m";
@@ -209,6 +210,8 @@ public class CLI {
         // System.out.println("Time Taken to Generate : "+duration/1000000+" ms");
         // System.out.println("-------------------------------------------------------------------\n");
 
+        sc.next();
+
         BigInteger transaction_id = new BigInteger(W1.latestTx(), 16);
 
         TxIn tx_in = new TxIn(transaction_id.toByteArray(), 1, null, "test");
@@ -331,7 +334,7 @@ public class CLI {
         Script script_sig = new Script(par);
         tx_in.setScript(script_sig);
 
-        System.out.println(bytesToHex(tx.encode(-1)));
+        System.out.println(ANSI_GREEN + "Final Message Broadcasted : \n" + ANSI_RED_BACKGROUND + ANSI_WHITE + bytesToHex(tx.encode(-1)) + ANSI_RESET);
         System.out.println(tx.encode(-1).length);
 
         System.out.println("-------------------------------------------------------------------\n");

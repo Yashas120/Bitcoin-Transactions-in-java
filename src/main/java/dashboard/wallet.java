@@ -20,9 +20,9 @@ public class Wallet {
     String name;
     String secretKey;
     float balance;
-    String addr;
-    Point publicKey;
-    BigInteger secretKeyInt;
+    public String addr;
+    public Point publicKey;
+    public BigInteger secretKeyInt;
     BigInteger p = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F", 16);
     BigInteger a = new BigInteger("0000000000000000000000000000000000000000000000000000000000000000", 16);
     BigInteger b = new BigInteger("0000000000000000000000000000000000000000000000000000000000000007", 16);
@@ -35,7 +35,7 @@ public class Wallet {
     public static String toHex(String arg) {
         return String.format("%040x", new BigInteger(1, arg.getBytes(Charset.forName("UTF-8"))));
       }
-    Wallet( String name, String key){
+    public Wallet( String name, String key){
         this.name = name;
         this.secretKey = key;
         this.balance = 0;
