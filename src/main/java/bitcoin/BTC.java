@@ -242,9 +242,9 @@ public class BTC{
     System.out.println("-------------------------------------------------------------------\n");
 
     byte[] sig_bytes = sig.encode();
-    System.out.println(bytesToHex(sig_bytes));
-
+    
     byte[] sig_bytes_and_type = new byte[sig_bytes.length+1];
+    System.arraycopy(sig_bytes,0,sig_bytes_and_type,0,sig_bytes.length);
     sig_bytes_and_type[sig_bytes.length] = (byte)0x01;
 
     byte[] pubkey_bytes = PublicKey.toPublicKey(publicKey).encode(true, false);
@@ -262,7 +262,8 @@ public class BTC{
     par.add(t3);
     Script script_sig = new Script(par);
     TxIn.setScript(tx_in, script_sig);
-    
+
+    System.out.println(bytesToHex(tx.encode(false, -1)));
     // Object re[] = PublicKey.gen_key_pair();
     // System.out.println(re[0]);
     // System.out.println(re[1]);
@@ -273,4 +274,7 @@ public class BTC{
   }
 }
 
+
+// 0100000001b2364d6ba4cbfd3dad8d6dc8dde1095f959bac4ee4ee7c4b8ab99fc885503246010000006a473044022079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798022072e4505d09e2bfe209a0c0b5e1aac1ca435159ec6f1ea563475e16eb250bf7e9012103b9b554e25022c2ae549b0c30c18df0a8e0495223f627ae38df0992efb4779475ffffffff0250c30000000000001976a91475b0c9fc784ba2ea0839e3cdf2669495cac6707388ac8cb90000000000001976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac00000000
+// 010000000146325085c89fb98a4b7ceee44eac9b955f09e1ddc86d8dad3dfdcba46b4d36b2010000006a473044022079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798022072e4505d09e2bfe209a0c0b5e1aac1ca435159ec6f1ea563475e16eb250bf7e9012103b9b554e25022c2ae549b0c30c18df0a8e0495223f627ae38df0992efb4779475ffffffff0250c30000000000001976a91475b0c9fc784ba2ea0839e3cdf2669495cac6707388ac8cb90000000000001976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac00000000
 
