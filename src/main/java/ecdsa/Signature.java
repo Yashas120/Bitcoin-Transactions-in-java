@@ -3,6 +3,7 @@ package ecdsa;
 import hashing.Sha;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.*;
 import java.util.*;
@@ -12,8 +13,8 @@ import ecc.Generator;
 import ecc.Point;
 
 public class Signature {
-    private long r;
-    private long s;
+    private BigInteger r;
+    private BigInteger s;
     
     protected long bytesToLong(byte []arr){
         byte []conv = new byte[8];
@@ -33,12 +34,20 @@ public class Signature {
         return bytes;
     }
 
+    private static String bytesToHex(byte[] in) {
+        final StringBuilder builder = new StringBuilder();
+        for(byte b : in) {
+            builder.append(String.format("%02x", 0xFF & b));
+        }
+        return builder.toString();
+      }
+
     protected byte[] longToBytes(long num){
         return  ByteBuffer.allocate(32).putLong(num).array();
     }
     
-    protected byte[] dern(long n){
-        byte[] temp = longToBytes(n);
+    protected byte[] dern(BigInteger n){
+        byte[] temp = n.toByteArray();
         ArrayList<Byte> nb = new ArrayList<Byte>();
         for(int i=0; i<temp.length; i++){
             if(temp[i] == 0){
@@ -74,7 +83,7 @@ public class Signature {
         for(int i=0; i<rlength; i++){
             r[i] = (byte) s.read();
         }
-        long rval = bytesToLong(r);
+        BigInteger rval = new BigInteger(bytesToHex(r),16);
         // Read the 0x02 byte
         s.read();
         int slength = s.read();
@@ -82,7 +91,7 @@ public class Signature {
         for(int i=0; i<rlength; i++){
             r[i] = (byte) s.read();
         }
-        long sval = bytesToLong(r);
+        BigInteger sval = new BigInteger(bytesToHex(r),16);
         Signature cls = new Signature();
         cls.r = rval;
         cls.s = sval;
@@ -108,7 +117,7 @@ public class Signature {
         return Bytetobyte(frame);
     }
 
-    public Signature sign(int secret_key, byte[] message) throws IOException{
+    public Signature sign(BigInteger secret_key, byte[] message) throws IOException{
         BigInteger p = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F", 16);
         BigInteger a = new BigInteger("0000000000000000000000000000000000000000000000000000000000000000", 16);
         BigInteger b = new BigInteger("0000000000000000000000000000000000000000000000000000000000000007", 16);
@@ -122,13 +131,15 @@ public class Signature {
         n = gen.n;
     
         Sha sha = Sha.getSha();
-        long z = bytesToLong(sha.sha256(sha.sha256(message)));
-        long sk = (long) ((Math.random() * (n.intValue() - 1)) + 1);
-        G.x = BigInteger.valueOf(sk).multiply(gen.G.x);
+        BigInteger z = new BigInteger(bytesToHex(sha.sha256(sha.sha256(message))),16);
+        BigDecimal term2 = new BigDecimal(n.subtract(BigInteger.ONE));
+        BigDecimal term3 = new BigDecimal(BigInteger.ONE);
+        BigInteger sk = BigDecimal.valueOf(Math.random()).multiply(term2).add(term3).toBigInteger();
+        Point P = G.multiply(sk);
     
-        long rt = G.x.longValue();
-        BigInteger f1 =  G.inv(BigInteger.valueOf(sk), n);
-        BigInteger f2 = BigInteger.valueOf(z).add(BigInteger.valueOf((long)(secret_key * r)));
+        BigInteger rt = P.x;
+        BigInteger f1 =  P.inv(sk, n);
+        BigInteger f2 = secret_key.multiply(rt).add(z);
         BigInteger st =f1.multiply(f2).mod(n);
         if(st.compareTo(n.divide(BigInteger.valueOf(2))) == -1){
             st = n.subtract(st);
@@ -136,7 +147,7 @@ public class Signature {
     
         Signature s = new Signature();
         s.r = rt;
-        s.s = st.longValue();
+        s.s = st;
         return s;
     }
     
@@ -154,13 +165,18 @@ public class Signature {
         n = gen.n;
 
         Sha sha = Sha.getSha();
-        long z = bytesToLong(sha.sha256(sha.sha256(message)));
+        BigInteger z = new BigInteger(bytesToHex(sha.sha256(sha.sha256(message))),16);
 
-        BigInteger w = G.inv(BigInteger.valueOf(sig.s), n);
-        BigInteger u1 = BigInteger.valueOf(z).multiply(w).mod(n);
-        BigInteger u2 = BigInteger.valueOf(sig.r).multiply(w).mod(n);
+        BigInteger w = G.inv(sig.s, n);
+        BigInteger u1 = z.multiply(w).mod(n);
+        BigInteger u2 = sig.r.multiply(w).mod(n);
         G.x = u1.multiply(gen.G.x).add(u2.multiply(public_key.x));
-        return G.x == BigInteger.valueOf(sig.r);  
+        return G.x == sig.r;  
+    }
+
+    @Override 
+    public String toString(){
+        return "r: " + this.r + "s: " + this.s;
     }
     
 }

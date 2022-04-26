@@ -14,6 +14,7 @@ import transaction.TxIn;
 import transaction.TxOut;
 import transaction.Script;
 import transaction.Tx;
+import ecdsa.Signature;
 
 public class BTC{
   public static String toHex(String arg) {
@@ -234,6 +235,10 @@ public class BTC{
     byte[] message = tx.encode(true, 0);
     System.out.println("\nmessage : "+bytesToHex(message));
     System.out.println("-------------------------------------------------------------------\n");
+
+    Signature sig = new Signature();
+    sig = sig.sign(secretKey, message);
+    System.out.println("\nSignature : \n" + sig);
     // Object re[] = PublicKey.gen_key_pair();
     // System.out.println(re[0]);
     // System.out.println(re[1]);
