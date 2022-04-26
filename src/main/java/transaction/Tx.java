@@ -18,20 +18,11 @@ class Tx_helper{
       }
 
     static protected byte[] reverse(byte[] array) {
-        if (array == null) {
-            return null;
+        byte[] arr = new byte[array.length];
+        for(int i=0; i<array.length; i++){
+            arr[i] = array[array.length-i-1];
         }
-        int i = 0;
-        int j = array.length - 1;
-        byte tmp;
-        while (j > i) {
-            tmp = array[j];
-            array[j] = array[i];
-            array[i] = tmp;
-            j--;
-            i++;
-        }
-        return array;
+        return arr;
     }
 
     static protected byte[] hexStringToByteArray(String s) {
@@ -266,10 +257,10 @@ public class Tx {
     public String id() throws Exception{
         Sha sha = Sha.getSha();
         byte [] tx_encode = this.encode(-1);
-        System.out.println("in id tx_encode : "+Tx_helper.bytesToHex(tx_encode));
+        // System.out.println("in id tx_encode : "+Tx_helper.bytesToHex(tx_encode));
         byte[] res = sha.sha256(sha.sha256(this.encode(-1)));
-        helper.reverse(res);
-        return helper.bytesToHex(res);
+
+        return helper.bytesToHex(Tx_helper.reverse(res));
     }
 
     public byte[] encode(int sig_index) throws Exception{
@@ -296,8 +287,8 @@ public class Tx {
                 for(byte b : tx_in.encode(3)){
                     out.add(b);
                 }
-                System.out.println("TX Script_SIG 0");
-                System.out.println(Tx_helper.bytesToHex(tx_in.encode(3)));
+                // System.out.println("TX Script_SIG 0");
+                // System.out.println(Tx_helper.bytesToHex(tx_in.encode(3)));
 
             }
 
@@ -310,8 +301,8 @@ public class Tx {
                 for (byte b : t){
                     out.add(b);
                 }
-                System.out.println("TX Script_SIG");
-                System.out.println(Tx_helper.bytesToHex(script.encode(sig_idx)));
+                // System.out.println("TX Script_SIG");
+                // System.out.println(Tx_helper.bytesToHex(script.encode(sig_idx)));
                 // System.out.println("sig_index!=-1 : "+Tx_helper.bytesToHex(t));
                 counter++;
             }

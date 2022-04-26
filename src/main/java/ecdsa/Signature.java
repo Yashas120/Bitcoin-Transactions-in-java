@@ -150,6 +150,7 @@ public class Signature {
         Generator gen = new Generator(G, n);
         n = gen.n;
         Sha sha = Sha.getSha();
+        System.out.println("msg:" + bytesToHex(message));
         byte [] sha1 = sha.sha256(message);
         byte [] sha2 = sha.sha256(sha1);
         BigInteger z = new BigInteger(bytesToHex(sha2), 16);
@@ -164,25 +165,26 @@ public class Signature {
         BigDecimal sk1 = BigDecimal.valueOf(Math.random()).multiply(term2).add(term3);
 
         // System.out.println("decimal sk : "+sk1);
-        BigInteger sk = sk1.toBigInteger();
+        // BigInteger sk = sk1.toBigInteger();
         // System.out.println("integer sk : "+sk);
-        // BigInteger sk = new BigInteger("2");
+        BigInteger sk = new BigInteger("2");
         Point P = G.multiply(sk);
         
         BigInteger rt = P.x;
         BigInteger f1 =  P.inv(sk, n);
         BigInteger f2 = secret_key.multiply(rt).add(z);
-        System.out.println("f1 : "+f1);
+        System.out.println("sha : "+bytesToHex(sha1));
+        System.out.println("z : "+z);
         System.out.println("f2 : "+f2);
         BigInteger st = f1.multiply(f2).mod(n).add(n).mod(n);
 
-        System.out.println("s : "+st);
-        System.out.println("n : "+n);
+        // System.out.println("s : "+st);
+        // System.out.println("n : "+n);
         BigInteger test = n.divide(new BigInteger("2"));
         if(st.compareTo(test) == 1){
             st = n.subtract(st);
         }
-        System.out.println(st);
+        // System.out.println(st);
         Signature s = new Signature();
         s.r = rt;
         s.s = st;

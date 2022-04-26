@@ -38,6 +38,7 @@ class helper{
         // System.out.println(byteList);
         // Collections.reverse(byteList);
         // return Bytetobyte( byteList);
+        
         byte[] arr = new byte[array.length];
         for(int i=0; i<array.length; i++){
             arr[i] = array[array.length-i-1];
@@ -91,7 +92,25 @@ class helper{
 
     static byte[] encode_int(BigInteger sequence, int nbytes, String encoding){ 
         BigInteger bigInt = sequence;     
-        byte[] s = bigInt.toByteArray();
+        byte[] s1 = bigInt.toByteArray();
+        int start_idx = 0;
+        for(int i=0; i<s1.length; i++){
+            if(s1[i] == (byte)0x0){
+            continue;
+            }
+            else{
+            start_idx = i;
+            break;
+            }
+        }
+        // System.out.println("Start Index : "+start_idx+" len : "+pt.length);
+        // System.out.println("Txin PT : " + helper.bytesToHex(pt));
+        byte []s = new byte[4];
+      
+        int idx = 0;
+        for(int i=start_idx; i<s1.length; i++){
+            s[idx++] = s1[i];
+        }
         byte[] out = new byte[nbytes];
         reverse(s);
         if(encoding == "little"){
@@ -262,12 +281,17 @@ public class TxIn{
             break;
             }
         }
-        this.prev_tx = new byte[pt.length-start_idx];
+        // System.out.println("Start Index : "+start_idx+" len : "+pt.length);
+        // System.out.println("Txin PT : " + helper.bytesToHex(pt));
+        this.prev_tx = new byte[32];
       
         int idx = 0;
-        for(int i=start_idx; i<this.prev_tx.length; i++){
+        for(int i=start_idx; i<this.prev_tx.length+1; i++){
             this.prev_tx[idx++] = pt[i];
         }
+        // System.out.println();
+        // System.out.println("Txin PT2 : " + helper.bytesToHex(this.prev_tx));
+
         this.prev_index = pi;
         this.script_sig = ss;
         this.sequence = new BigInteger("ffffffff",16);
@@ -284,7 +308,9 @@ public class TxIn{
 
     public byte[] encode(int script_override) throws Exception{
         List<Byte> out = new ArrayList<Byte>();
-        System.out.println(helper.bytesToHex(this.prev_tx));
+        // System.out.println("prev tx: " + helper.bytesToHex(this.prev_tx));
+        // System.out.println("prev tx rev: " + helper.bytesToHex(helper.reverse(this.prev_tx)));
+
         for(byte p : helper.reverse(this.prev_tx)){
             out.add(p);
         }

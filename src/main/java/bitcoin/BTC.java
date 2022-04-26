@@ -41,26 +41,26 @@ public class BTC{
     Point G = new Point(bitcoinCurve,x,y);
     Generator bitcoinGenerator = new Generator(G, n);
 
-    System.out.println("Curve Parameters : \n"+bitcoinCurve.toString());
-    System.out.println("Seed Point parameters : \n"+G.toString());
-    System.out.println("Generator parameters : \n"+bitcoinGenerator.toString());
-    System.out.println("Generator Point is on curve : " + G.verify_on_curve());
+    // System.out.println("Curve Parameters : \n"+bitcoinCurve.toString());
+    // System.out.println("Seed Point parameters : \n"+G.toString());
+    // System.out.println("Generator parameters : \n"+bitcoinGenerator.toString());
+    // System.out.println("Generator Point is on curve : " + G.verify_on_curve());
     
     int sk1 = 1;
     Point pk1 = G;
-    System.out.println("Secret Key : "+sk1+"\nPublic Key : \nx : "+pk1.x+"\ny : "+pk1.y);
-    System.out.println("Generated Point is on curve : " + pk1.verify_on_curve());
-    System.out.println("-------------------------------------------------------------------");
+    // System.out.println("Secret Key : "+sk1+"\nPublic Key : \nx : "+pk1.x+"\ny : "+pk1.y);
+    // System.out.println("Generated Point is on curve : " + pk1.verify_on_curve());
+    // System.out.println("-------------------------------------------------------------------");
     int sk2 = 2;
     
     long startTime = System.nanoTime();
     Point pk2 = G.add(G);
     long endTime = System.nanoTime();
     long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds
-    System.out.println("Secret Key : "+sk2+"\nPublic Key : \nx : "+pk2.x+"\ny : "+pk2.y);
-    System.out.println("Generated Point is on curve : " + pk2.verify_on_curve());
-    System.out.println("Time : "+duration/1000000+" ms");
-    System.out.println("-------------------------------------------------------------------");
+    // System.out.println("Secret Key : "+sk2+"\nPublic Key : \nx : "+pk2.x+"\ny : "+pk2.y);
+    // System.out.println("Generated Point is on curve : " + pk2.verify_on_curve());
+    // System.out.println("Time : "+duration/1000000+" ms");
+    // System.out.println("-------------------------------------------------------------------");
     int sk3 = 3;
 
     startTime = System.nanoTime();
@@ -68,16 +68,16 @@ public class BTC{
     endTime = System.nanoTime();
     duration = (endTime - startTime);
     
-    System.out.println("Secret Key : "+sk3+"\nPublic Key : \nx : "+pk3.x+"\ny : "+pk3.y);
-    System.out.println("Generated Point is on curve : " + pk3.verify_on_curve());
-    System.out.println("Time : "+duration/1000000+" ms");
-    System.out.println("-------------------------------------------------------------------\n");
+    // System.out.println("Secret Key : "+sk3+"\nPublic Key : \nx : "+pk3.x+"\ny : "+pk3.y);
+    // System.out.println("Generated Point is on curve : " + pk3.verify_on_curve());
+    // System.out.println("Time : "+duration/1000000+" ms");
+    // System.out.println("-------------------------------------------------------------------\n");
 
     int msk1 = 1;
     Point mpk1 = G;
-    System.out.println("Secret Key : "+msk1+"\nPublic Key : \nx : "+mpk1.x+"\ny : "+mpk1.y);
-    System.out.println("Generated Point is on curve : " + mpk1.verify_on_curve());
-    System.out.println("-------------------------------------------------------------------");
+    // System.out.println("Secret Key : "+msk1+"\nPublic Key : \nx : "+mpk1.x+"\ny : "+mpk1.y);
+    // System.out.println("Generated Point is on curve : " + mpk1.verify_on_curve());
+    // System.out.println("-------------------------------------------------------------------");
 
     int msk2 = 2;
     startTime = System.nanoTime();
@@ -85,10 +85,10 @@ public class BTC{
     endTime = System.nanoTime();
     duration = (endTime - startTime);
     
-    System.out.println("Secret Key : "+msk2+"\nPublic Key : \nx : "+mpk2.x+"\ny : "+mpk2.y);
-    System.out.println("Generated Point is on curve : " + mpk2.verify_on_curve());
-    System.out.println("Time : "+duration/1000000+" ms");
-    System.out.println("-------------------------------------------------------------------");
+    // System.out.println("Secret Key : "+msk2+"\nPublic Key : \nx : "+mpk2.x+"\ny : "+mpk2.y);
+    // System.out.println("Generated Point is on curve : " + mpk2.verify_on_curve());
+    // System.out.println("Time : "+duration/1000000+" ms");
+    // System.out.println("-------------------------------------------------------------------");
 
     int msk3 = 3;
     startTime = System.nanoTime();
@@ -96,10 +96,10 @@ public class BTC{
     endTime = System.nanoTime();
     duration = (endTime - startTime);
     
-    System.out.println("Secret Key : "+msk3+"\nPublic Key : \nx : "+mpk3.x+"\ny : "+mpk3.y);
-    System.out.println("Generated Point is on curve : " + mpk3.verify_on_curve());
-    System.out.println("Time : "+duration/1000000+" ms");
-    System.out.println("-------------------------------------------------------------------");
+    // System.out.println("Secret Key : "+msk3+"\nPublic Key : \nx : "+mpk3.x+"\ny : "+mpk3.y);
+    // System.out.println("Generated Point is on curve : " + mpk3.verify_on_curve());
+    // System.out.println("Time : "+duration/1000000+" ms");
+    // System.out.println("-------------------------------------------------------------------");
 
     String secretKey_string = "chinna";
     // String secretKey_string = "vishal";
@@ -109,11 +109,11 @@ public class BTC{
     Point publicKey = G.multiply(secretKey);
     endTime = System.nanoTime();
     duration = (endTime - startTime);
-    System.out.println("Secret Key : "+secretKey_string);
-    System.out.println("Public Key : \nx : "+publicKey.x+"\ny : "+publicKey.y);
-    System.out.println("Public Key generated is on curve : \033[92m" + publicKey.verify_on_curve()+"\033[0m");
-    System.out.println("Time : "+duration/1000000+" ms");
-    System.out.println("-------------------------------------------------------------------");
+    // System.out.println("Secret Key : "+secretKey_string);
+    // System.out.println("Public Key : \nx : "+publicKey.x+"\ny : "+publicKey.y);
+    // System.out.println("Public Key generated is on curve : \033[92m" + publicKey.verify_on_curve()+"\033[0m");
+    // System.out.println("Time : "+duration/1000000+" ms");
+    // System.out.println("-------------------------------------------------------------------");
 
     String secretKey_string2 = "munna";
     BigInteger secretKey2 = new BigInteger(toHex(secretKey_string2),16);
@@ -122,33 +122,33 @@ public class BTC{
     Point publicKey2 = G.multiply(secretKey2);
     endTime = System.nanoTime();
     duration = (endTime - startTime);
-    System.out.println("Secret Key : "+secretKey_string2);
-    System.out.println("Public Key : \nx : "+publicKey2.x+"\ny : "+publicKey2.y);
-    System.out.println("Public Key generated is on curve : \033[92m" + publicKey2.verify_on_curve()+"\033[0m");
-    System.out.println("Time : "+duration/1000000+" ms");
-    System.out.println("-------------------------------------------------------------------");
+    // System.out.println("Secret Key : "+secretKey_string2);
+    // System.out.println("Public Key : \nx : "+publicKey2.x+"\ny : "+publicKey2.y);
+    // System.out.println("Public Key generated is on curve : \033[92m" + publicKey2.verify_on_curve()+"\033[0m");
+    // System.out.println("Time : "+duration/1000000+" ms");
+    // System.out.println("-------------------------------------------------------------------");
 
     startTime = System.nanoTime();
     String pbk1 = PublicKey.toPublicKey(publicKey).address("test", true);
     endTime = System.nanoTime();
     duration = (endTime - startTime);
     
-    System.out.println("\nBitcoin addr : "+pbk1);
-    System.out.println("Link : https://www.blockchain.com/btc-testnet/address/"+pbk1);
-    System.out.println("Length of addr : "+pbk1.length());
-    System.out.println("Time Taken to Generate : "+duration/1000000+" ms");
-    System.out.println("-------------------------------------------------------------------");
+    // System.out.println("\nBitcoin addr : "+pbk1);
+    // System.out.println("Link : https://www.blockchain.com/btc-testnet/address/"+pbk1);
+    // System.out.println("Length of addr : "+pbk1.length());
+    // System.out.println("Time Taken to Generate : "+duration/1000000+" ms");
+    // System.out.println("-------------------------------------------------------------------");
 
     startTime = System.nanoTime();
     String pbk2 = PublicKey.toPublicKey(publicKey2).address("test", true);
     endTime = System.nanoTime();
     duration = (endTime - startTime);
     
-    System.out.println("\nBitcoin addr : "+pbk2);
-    System.out.println("Link : https://www.blockchain.com/btc-testnet/address/"+pbk2);
-    System.out.println("Length of addr : "+pbk2.length());
-    System.out.println("Time Taken to Generate : "+duration/1000000+" ms");
-    System.out.println("-------------------------------------------------------------------\n");
+    // System.out.println("\nBitcoin addr : "+pbk2);
+    // System.out.println("Link : https://www.blockchain.com/btc-testnet/address/"+pbk2);
+    // System.out.println("Length of addr : "+pbk2.length());
+    // System.out.println("Time Taken to Generate : "+duration/1000000+" ms");
+    // System.out.println("-------------------------------------------------------------------\n");
 
     BigInteger transaction_id = new BigInteger("90983ca2f32f9bc2622c9a9540708d92ec1eff035b7cbf4624f225010e89cb7f", 16);
 
@@ -247,7 +247,7 @@ public class BTC{
     System.out.println("-------------------------------------------------------------------\n");
 
     byte[] sig_bytes = sig.encode();
-    
+    System.out.println("Sig Bytes: " + bytesToHex(sig_bytes));
     byte [] sig_bytes_and_type = new byte[sig_bytes.length+1];
     int i = 0;
     for(i = 0; i<sig_bytes.length; i++){
@@ -288,6 +288,27 @@ public class BTC{
   
   }
 }
+// act 01000000017fcb890e0125f22446bf7c5b03ff1eec928d7040959a2c62c29b2ff3a23c9890010000006b483045022100c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee50220730aab03fc30838e70ff476a4ec0129e2a6b6885678472afcb667f2f7d84959501210279e6b76607411d0b60ea4a572b4ed9f71b00c1bd92bd49a199717348b1d9dd2fffffffff02e8030000000000001976a914deff48f7ea4eed464725fa22fdf637bb69a0c6b588ac52030000000000001976a91478d0db67fef5e266ff056cce57fb2786745f7f3188ac00000000
+// got 01000000017fcb890e0125f22446bf7c5b03ff1eec928d7040959a2c62c29b2ff3a23c9890010000006b483045022100c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee50220730aab03fc30838e70ff476a4ec0129e2a6b6885678472afcb667f2f7d84959501210279e6b76607411d0b60ea4a572b4ed9f71b00c1bd92bd49a199717348b1d9dd2fffffffff02e8030000000000001976a914deff48f7ea4eed464725fa22fdf637bb69a0c6b588ac52030000000000001976a91478d0db67fef5e266ff056cce57fb2786745f7f3188ac00000000
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // 01000000017fcb890e0125f22446bf7c5b03ff1eec928d7040959a2c62c29b2ff3a23c989000010000001976a91478d0db67fef5e266ff056cce57fb2786745f7f3188acffffffff02e8030000000000001976a914deff48f7ea4eed464725fa22fdf637bb69a0c6b588ac52030000000000001976a91478d0db67fef5e266ff056cce57fb2786745f7f3188ac0000000001000000
@@ -303,6 +324,7 @@ public class BTC{
 // 1976a91478d0db67fef5e266ff056cce57fb2786745f7f3188ac
 
 // 01000000017fcb890e0125f22446bf7c5b03ff1eec928d7040959a2c62c29b2ff3a23c9890010000001976a91478d0db67fef5e266ff056cce57fb2786745f7f3188acffffffff02e8030000000000001976a914deff48f7ea4eed464725fa22fdf637bb69a0c6b588ac52030000000000001976a91478d0db67fef5e266ff056cce57fb2786745f7f3188ac0000000001000000
+// 01000000017fcb890e0125f22446bf7c5b03ff1eec928d7040959a2c62c29b2ff3a23c9890010000001976a91478d0db67fef5e266ff056cce57fb2786745f7f3188ac00ffffff02e8030000000000001976a914deff48f7ea4eed464725fa22fdf637bb69a0c6b588ac52030000000000001976a91478d0db67fef5e266ff056cce57fb2786745f7f3188ac0000000001000000
 // 01000000017fcb890e0125f22446bf7c5b03ff1eec928d7040959a2c62c29b2ff3a23c989000010000001976a91478d0db67fef5e266ff056cce57fb2786745f7f3188acffffffff02e8030000000000001976a914deff48f7ea4eed464725fa22fdf637bb69a0c6b588ac52030000000000001976a91478d0db67fef5e266ff056cce57fb2786745f7f3188ac0000000001000000
 
 // 7fcb890e0125f22446bf7c5b03ff1eec928d7040959a2c62c29b2ff3a23c9890   01000000 1976a91478d0db67fef5e266ff056cce57fb2786745f7f3188ac ffffffff
