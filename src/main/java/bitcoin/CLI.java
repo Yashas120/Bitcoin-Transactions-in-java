@@ -334,8 +334,10 @@ public class CLI {
         Script script_sig = new Script(par);
         tx_in.setScript(script_sig);
 
-        System.out.println(ANSI_GREEN + "Final Message Broadcasted : \n" + ANSI_RED_BACKGROUND + ANSI_WHITE + bytesToHex(tx.encode(-1)) + ANSI_RESET);
-        System.out.println(tx.encode(-1).length);
+        System.out.println(ANSI_GREEN + "Final Message Broadcasted : \n" + ANSI_GREEN_BACKGROUND + ANSI_WHITE + bytesToHex(tx.encode(-1)) + ANSI_RESET);
+        System.out.println("Length of the Message Broadcasted : " + tx.encode(-1).length);
+
+        W1.txBroadcast(bytesToHex(tx.encode(-1)));
 
         System.out.println("-------------------------------------------------------------------\n");
         System.out.println("id : "+tx.id());
