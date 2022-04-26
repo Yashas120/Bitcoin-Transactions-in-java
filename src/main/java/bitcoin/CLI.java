@@ -337,7 +337,7 @@ public class CLI {
         System.out.println(ANSI_GREEN + "Final Message Broadcasted : \n" + ANSI_GREEN_BACKGROUND + ANSI_WHITE + bytesToHex(tx.encode(-1)) + ANSI_RESET);
         System.out.println("Length of the Message Broadcasted : " + tx.encode(-1).length);
 
-        W1.txBroadcast(bytesToHex(message));
+        W1.txBroadcast(bytesToHex(tx.encode(-1)));
 
         System.out.println("-------------------------------------------------------------------\n");
         System.out.println("id : "+tx.id());
