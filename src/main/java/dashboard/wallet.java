@@ -21,6 +21,8 @@ public class Wallet {
     String secretKey;
     float balance;
     String addr;
+    Point publicKey;
+    BigInteger secretKeyInt;
     BigInteger p = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F", 16);
     BigInteger a = new BigInteger("0000000000000000000000000000000000000000000000000000000000000000", 16);
     BigInteger b = new BigInteger("0000000000000000000000000000000000000000000000000000000000000007", 16);
@@ -37,8 +39,9 @@ public class Wallet {
         this.name = name;
         this.secretKey = key;
         this.balance = 0;
-        BigInteger secretKeyInt = new BigInteger(toHex(secretKey),16);
-        Point publicKey = G.multiply(secretKeyInt);
+        this.secretKeyInt = new BigInteger(toHex(secretKey),16);
+        this.publicKey = G.multiply(secretKeyInt);
+
         System.out.println("Wallet Name : "+name);
         System.out.println("Secret Key : "+secretKey);
         System.out.println("Public Key : \nx : "+publicKey.x+"\ny : "+publicKey.y);
