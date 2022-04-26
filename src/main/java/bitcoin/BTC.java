@@ -239,14 +239,38 @@ public class BTC{
     Signature sig = new Signature();
     sig = sig.sign(secretKey, message);
     System.out.println("\nSignature : \n" + sig);
+    System.out.println("-------------------------------------------------------------------\n");
+
+    byte[] sig_bytes = sig.encode();
+    System.out.println(bytesToHex(sig_bytes));
+
+    byte[] sig_bytes_and_type = new byte[sig_bytes.length+1];
+    sig_bytes_and_type[sig_bytes.length] = (byte)0x01;
+
+    byte[] pubkey_bytes = PublicKey.toPublicKey(publicKey).encode(true, false);
+
+    ArrayList<ArrayList<Object>> par = new ArrayList<ArrayList<Object>>();
+    t3 = new ArrayList<Object>();
+    for(byte sbt : sig_bytes_and_type){
+      t3.add(sbt);
+    }
+    par.add(t3);
+    t3 = new ArrayList<Object>();
+    for(byte sbt : pubkey_bytes){
+      t3.add(sbt);
+    }
+    par.add(t3);
+    Script script_sig = new Script(par);
+    TxIn.setScript(tx_in, script_sig);
+    
     // Object re[] = PublicKey.gen_key_pair();
     // System.out.println(re[0]);
     // System.out.println(re[1]);
     // ParseBlockChain e = new ParseBlockChain();
     // e.get();
 
-    // 0100000001b2364d6ba4cbfd3dad8d6dc8dde1095f959bac4ee4ee7c4b8ab99fc88550324601000000 1976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac ffffffff0250c30000000000001976a91475b0c9fc784ba2ea0839e3cdf2669495cac6707388ac8cb90000000000001976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac0000000001000000
-    // 0100000001b2364d6ba4cbfd3dad8d6dc8dde1095f959bac4ee4ee7c4b8ab99fc88550324601000000 1976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac ffffffff0250c30000000000001976a91475b0c9fc784ba2ea0839e3cdf2669495cac6707388ac8cb90000000000001976a9144b3518229b0d3554fe7cd3796ade632aff3069d888ac0000000001000000
+  
   }
 }
+
 

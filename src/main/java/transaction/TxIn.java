@@ -246,7 +246,7 @@ public class TxIn{
         this.net = net;
     }
 
-    public void setScript(TxIn tx, Script sp){
+    public static void setScript(TxIn tx, Script sp){
         tx.script_sig = sp;
     }
 

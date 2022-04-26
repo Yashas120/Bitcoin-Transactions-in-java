@@ -48,72 +48,77 @@ public class Signature {
     
     protected byte[] dern(BigInteger n){
         byte[] temp = n.toByteArray();
+        // System.out.println(temp.length);
         ArrayList<Byte> nb = new ArrayList<Byte>();
-        for(int i=0; i<temp.length; i++){
-            if(temp[i] == 0){
-                temp[i] = -1;
+        int i;
+        for(i=0; i<temp.length; i++){
+            if(temp[i] == 0 && temp[i+1] == 0){
                 continue;
             }
-            else if(temp[i] != 0){
+            else{
                 break;
             }
         }
-        for(byte p : temp){
-            if(p != -1){
-                nb.add(p);
-            }
+        for(;i<temp.length; i++){
+            nb.add(temp[i]);
         }
-        if(nb.get(0) >= 80){
-            nb.add(0,(byte)0);
+        if(nb.get(0) >= 0x80){
+            nb.add(0,(byte)0x00);
         }
+        // System.out.println(nb.size());
+
+        // System.out.println(bytesToHex(temp));
         return Bytetobyte(nb);
         
     }
 
-    public Signature decode(byte[] der) throws IOException{
-        InputStream s = new ByteArrayInputStream(der);
-        // Read the 0x30 byte
-        s.read();
-        // Read total length of encoding
-        s.read();
-        // Read the 0x02 byte
-        s.read(); 
-        int rlength = s.read();
-        byte[] r = new byte[rlength];
-        for(int i=0; i<rlength; i++){
-            r[i] = (byte) s.read();
-        }
-        BigInteger rval = new BigInteger(bytesToHex(r),16);
-        // Read the 0x02 byte
-        s.read();
-        int slength = s.read();
-        r = new byte[slength];
-        for(int i=0; i<rlength; i++){
-            r[i] = (byte) s.read();
-        }
-        BigInteger sval = new BigInteger(bytesToHex(r),16);
-        Signature cls = new Signature();
-        cls.r = rval;
-        cls.s = sval;
-        return cls;
-    }
+    // public Signature decode(byte[] der) throws IOException{
+    //     InputStream s = new ByteArrayInputStream(der);
+    //     // Read the 0x30 byte
+    //     s.read();
+    //     // Read total length of encoding
+    //     s.read();
+    //     // Read the 0x02 byte
+    //     s.read(); 
+    //     int rlength = s.read();
+    //     byte[] r = new byte[rlength];
+    //     for(int i=0; i<rlength; i++){
+    //         r[i] = (byte) s.read();
+    //     }
+    //     BigInteger rval = new BigInteger(bytesToHex(r),16);
+    //     // Read the 0x02 byte
+    //     s.read();
+    //     int slength = s.read();
+    //     r = new byte[slength];
+    //     for(int i=0; i<rlength; i++){
+    //         r[i] = (byte) s.read();
+    //     }
+    //     BigInteger sval = new BigInteger(bytesToHex(r),16);
+    //     Signature cls = new Signature();
+    //     cls.r = rval;
+    //     cls.s = sval;
+    //     return cls;
+    // }
     
     public byte[] encode(){
         byte[] rb = dern(this.r);
         byte[] sb = dern(this.s);
+        // System.out.println(bytesToHex(rb)+" "+bytesToHex(sb));
         ArrayList<Byte> frame = new ArrayList<Byte>();
-        frame.add((byte)30);
-        frame.add((byte)(4+rb.length+sb.length));
-        frame.add((byte)2);
+        frame.add((byte)0x30);
+        frame.add((byte)0x02);
         frame.add((byte)rb.length);
+        // System.out.println(rb.length);
         for(byte b : rb){
             frame.add(b);
         }
-        frame.add((byte)2);
+        frame.add((byte)0x02);
         frame.add((byte)sb.length);
+        // System.out.println(sb.length);
         for(byte b : sb){
             frame.add(b);
         }
+        frame.add(1,(byte)(frame.size()-1));
         return Bytetobyte(frame);
     }
 
@@ -142,10 +147,11 @@ public class Signature {
         robj.setSeed(seed.intValue());
 
         BigDecimal sk1 = BigDecimal.valueOf(Math.random()).multiply(term2).add(term3);
-        System.out.println("decimal sk : "+sk1);
-        BigInteger sk = sk1.toBigInteger();
-        System.out.println("integer sk : "+sk);
-        // BigInteger sk = BigInteger.ONE;
+
+        // System.out.println("decimal sk : "+sk1);
+        // BigInteger sk = sk1.toBigInteger();
+        // System.out.println("integer sk : "+sk);
+        BigInteger sk = BigInteger.ONE;
         Point P = G.multiply(sk);
         
         BigInteger rt = P.x;
@@ -198,5 +204,15 @@ public class Signature {
     
 }
 
-// 90058095591498491416238072578713788397783575082545596483785475522013478186080
-// 115792089237316195423570985008687907852837564279074904382605163141518161494337
+// 55066263022277343669578718895168534326250603453777594175500187360389116729240
+// 55066263022277343669578718895168534326250603453777594175500187360389116729240
+
+// 51967060517285713168349626677389556053233043020107694455454497705960686745577
+// 51967060517285713168349626677389556053233043020107694455454497705960686745577
+
+// 3044022079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798022072e4505d09e2bfe209a0c0b5e1aac1ca435159ec6f1ea563475e16eb250bf7e9
+// 3044022079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798022072e4505d09e2bfe209a0c0b5e1aac1ca435159ec6f1ea563475e16eb250bf7e9
+
+// 79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+// 79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+
