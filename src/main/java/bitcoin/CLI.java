@@ -60,68 +60,68 @@ public class CLI {
         Point G = new Point(bitcoinCurve,x,y);
         Generator bitcoinGenerator = new Generator(G, n);
 
-        System.out.println("Curve Parameters : \n"+bitcoinCurve.toString());
-        System.out.println("Seed Point parameters : \n"+G.toString());
-        System.out.println("Generator parameters : \n"+bitcoinGenerator.toString());
-        System.out.println("Generator Point is on curve : " + G.verify_on_curve());
+        // System.out.println("Curve Parameters : \n"+bitcoinCurve.toString());
+        // System.out.println("Seed Point parameters : \n"+G.toString());
+        // System.out.println("Generator parameters : \n"+bitcoinGenerator.toString());
+        // System.out.println("Generator Point is on curve : " + G.verify_on_curve());
         
-        int sk1 = 1;
-        Point pk1 = G;
-        System.out.println("Secret Key : "+sk1+"\nPublic Key : \nx : "+pk1.x+"\ny : "+pk1.y);
-        System.out.println("Generated Point is on curve : " + pk1.verify_on_curve());
-        System.out.println("-------------------------------------------------------------------");
-        int sk2 = 2;
+        // int sk1 = 1;
+        // Point pk1 = G;
+        // System.out.println("Secret Key : "+sk1+"\nPublic Key : \nx : "+pk1.x+"\ny : "+pk1.y);
+        // System.out.println("Generated Point is on curve : " + pk1.verify_on_curve());
+        // System.out.println("-------------------------------------------------------------------");
+        // int sk2 = 2;
         
         long startTime = System.nanoTime();
-        Point pk2 = G.add(G);
+        // Point pk2 = G.add(G);
         long endTime = System.nanoTime();
         long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds
-        System.out.println("Secret Key : "+sk2+"\nPublic Key : \nx : "+pk2.x+"\ny : "+pk2.y);
-        System.out.println("Generated Point is on curve : " + pk2.verify_on_curve());
-        System.out.println("Time : "+duration/1000000+" ms");
-        System.out.println("-------------------------------------------------------------------");
-        int sk3 = 3;
+        // System.out.println("Secret Key : "+sk2+"\nPublic Key : \nx : "+pk2.x+"\ny : "+pk2.y);
+        // System.out.println("Generated Point is on curve : " + pk2.verify_on_curve());
+        // System.out.println("Time : "+duration/1000000+" ms");
+        // System.out.println("-------------------------------------------------------------------");
+        // int sk3 = 3;
 
-        startTime = System.nanoTime();
-        Point pk3 = G.add(G).add(G);
-        endTime = System.nanoTime();
-        duration = (endTime - startTime);
+        // startTime = System.nanoTime();
+        // Point pk3 = G.add(G).add(G);
+        // endTime = System.nanoTime();
+        // duration = (endTime - startTime);
         
-        System.out.println("Secret Key : "+sk3+"\nPublic Key : \nx : "+pk3.x+"\ny : "+pk3.y);
-        System.out.println("Generated Point is on curve : " + pk3.verify_on_curve());
-        System.out.println("Time : "+duration/1000000+" ms");
-        System.out.println("-------------------------------------------------------------------\n");
+        // System.out.println("Secret Key : "+sk3+"\nPublic Key : \nx : "+pk3.x+"\ny : "+pk3.y);
+        // System.out.println("Generated Point is on curve : " + pk3.verify_on_curve());
+        // System.out.println("Time : "+duration/1000000+" ms");
+        // System.out.println("-------------------------------------------------------------------\n");
 
-        int msk1 = 1;
-        Point mpk1 = G;
-        System.out.println("Secret Key : "+msk1+"\nPublic Key : \nx : "+mpk1.x+"\ny : "+mpk1.y);
-        System.out.println("Generated Point is on curve : " + mpk1.verify_on_curve());
-        System.out.println("-------------------------------------------------------------------");
+        // int msk1 = 1;
+        // Point mpk1 = G;
+        // System.out.println("Secret Key : "+msk1+"\nPublic Key : \nx : "+mpk1.x+"\ny : "+mpk1.y);
+        // System.out.println("Generated Point is on curve : " + mpk1.verify_on_curve());
+        // System.out.println("-------------------------------------------------------------------");
 
-        int msk2 = 2;
-        startTime = System.nanoTime();
-        Point mpk2 = G.multiply(new BigInteger("2"));
-        endTime = System.nanoTime();
-        duration = (endTime - startTime);
+        // int msk2 = 2;
+        // startTime = System.nanoTime();
+        // Point mpk2 = G.multiply(new BigInteger("2"));
+        // endTime = System.nanoTime();
+        // duration = (endTime - startTime);
         
-        System.out.println("Secret Key : "+msk2+"\nPublic Key : \nx : "+mpk2.x+"\ny : "+mpk2.y);
-        System.out.println("Generated Point is on curve : " + mpk2.verify_on_curve());
-        System.out.println("Time : "+duration/1000000+" ms");
-        System.out.println("-------------------------------------------------------------------");
+        // System.out.println("Secret Key : "+msk2+"\nPublic Key : \nx : "+mpk2.x+"\ny : "+mpk2.y);
+        // System.out.println("Generated Point is on curve : " + mpk2.verify_on_curve());
+        // System.out.println("Time : "+duration/1000000+" ms");
+        // System.out.println("-------------------------------------------------------------------");
 
-        int msk3 = 3;
-        startTime = System.nanoTime();
-        Point mpk3 = G.multiply(new BigInteger("3"));
-        endTime = System.nanoTime();
-        duration = (endTime - startTime);
+        // int msk3 = 3;
+        // startTime = System.nanoTime();
+        // Point mpk3 = G.multiply(new BigInteger("3"));
+        // endTime = System.nanoTime();
+        // duration = (endTime - startTime);
         
-        System.out.println("Secret Key : "+msk3+"\nPublic Key : \nx : "+mpk3.x+"\ny : "+mpk3.y);
-        System.out.println("Generated Point is on curve : " + mpk3.verify_on_curve());
-        System.out.println("Time : "+duration/1000000+" ms");
-        System.out.println("-------------------------------------------------------------------");
+        // System.out.println("Secret Key : "+msk3+"\nPublic Key : \nx : "+mpk3.x+"\ny : "+mpk3.y);
+        // System.out.println("Generated Point is on curve : " + mpk3.verify_on_curve());
+        // System.out.println("Time : "+duration/1000000+" ms");
+        // System.out.println("-------------------------------------------------------------------");
         
         Wallet W1;
-        boolean flag;
+        boolean flag ;
         String W1_name;
         String W1_sk;
         do{
@@ -135,13 +135,13 @@ public class CLI {
             flag = W1.newWallet();
             flag = !flag;
             if(flag){
-                System.out.println("Enter a new Unique Wallet");
+                System.out.println(ANSI_RED+"Wallet Already Used! Please enter a new Wallet"+ANSI_RESET);
             }
         }while(flag);
         
         duration = (endTime - startTime);
         System.out.println(ANSI_GREEN + String.format("\nBitcoin addr of Wallet %s : ",W1_name)+ ANSI_PURPLE + W1.addr + ANSI_RESET);
-        System.out.println("Link : https://www.blockchain.com/btc-testnet/address/"+W1.addr);
+        System.out.println("Link : "+ANSI_BLUE+"https://www.blockchain.com/btc-testnet/address/"+W1.addr+ANSI_RESET);
         System.out.println("Length of addr : "+W1.addr.length());
         System.out.println("Time Taken to Generate : "+duration/1000000+" ms");
         System.out.println("-------------------------------------------------------------------");
@@ -170,7 +170,7 @@ public class CLI {
 
         duration = (endTime - startTime);
         System.out.println(ANSI_GREEN + String.format("\nBitcoin addr of Wallet %s : ",W2_name)+ ANSI_PURPLE + W2.addr + ANSI_RESET);
-        System.out.println("Link : https://www.blockchain.com/btc-testnet/address/"+W2.addr);
+        System.out.println("Link : "+ANSI_BLUE+"https://www.blockchain.com/btc-testnet/address/"+W2.addr+ANSI_RESET);
         System.out.println("Length of addr : "+W2.addr.length());
         System.out.println("Time Taken to Generate : "+duration/1000000+" ms");
         System.out.println("-------------------------------------------------------------------");
@@ -209,8 +209,33 @@ public class CLI {
         // System.out.println("Length of addr : "+pbk2.length());
         // System.out.println("Time Taken to Generate : "+duration/1000000+" ms");
         // System.out.println("-------------------------------------------------------------------\n");
+        
+        System.out.println("Please insert few bitcoins to the first wallet ("+ANSI_PURPLE+W1.addr+ANSI_RESET+") using a Bitcoin Testnet Faucet link given below.\n\nBitcoin Testnet Faucet Link : "+ANSI_BLUE+"https://bitcoinfaucet.uo1.net/send.php\n\n"+ANSI_RESET);
+        
+        System.out.println("Wallet Balances : \n");
+        System.out.println("Wallet 1 ("+ANSI_PURPLE+W1.addr+ANSI_RESET+") : "+ANSI_GREEN+W1.getBalance()+ANSI_RESET+" BTC or "+ANSI_GREEN+W1.getBalance()*1E8+ANSI_RESET+" satoshis.");
+        System.out.println("Wallet 2 ("+ANSI_PURPLE+W2.addr+ANSI_RESET+") : "+ANSI_GREEN+W2.getBalance()+ANSI_RESET+" BTC or "+ANSI_GREEN+W2.getBalance()*1E8+ANSI_RESET+" satoshis.");
 
+        Thread.sleep(120000);
+
+        System.out.println("\nPlease confirm that bitcoins have been deposited to Wallet 1 ("+ANSI_PURPLE+W1.addr+ANSI_RESET+") by pressing typing CONFIRM below.");
         sc.next();
+        
+        System.out.println("Wallet Balances : \n");
+        System.out.println("Wallet 1 ("+ANSI_PURPLE+W1.addr+ANSI_RESET+") : "+ANSI_GREEN+W1.getBalance()+ANSI_RESET+" BTC or "+ANSI_GREEN+W1.getBalance()*1E8+ANSI_RESET+" satoshis.");
+        System.out.println("Wallet 2 ("+ANSI_PURPLE+W2.addr+ANSI_RESET+") : "+ANSI_GREEN+W2.getBalance()+ANSI_RESET+" BTC or "+ANSI_GREEN+W2.getBalance()*1E8+ANSI_RESET+" satoshis.");
+
+        float amt = 0.0f;
+        System.out.println("Please enter the amount (in satoshi) to transfer from "+ANSI_PURPLE+W1.addr+ANSI_GREEN+" -> "+ANSI_PURPLE+W2.addr+ANSI_RESET+" : ");
+        amt = sc.nextFloat();
+        float fee = (float)0.1f * amt;
+        
+        while ((W1.getBalance()*1E8) - amt - fee < 0){
+            System.out.println(ANSI_RED+"Wallet 1 ("+ANSI_PURPLE+W1.addr+ANSI_RED+") has insufficient balance."+ANSI_RESET+" Please renter the amount to be transfered : ");
+            amt = sc.nextFloat();
+            fee = (float)0.1f * amt;
+        }
+
 
         BigInteger transaction_id = new BigInteger(W1.latestTx(), 16);
 
@@ -237,7 +262,7 @@ public class CLI {
         temp.add(t);
         
         Script out1_script = new Script(temp);
-        System.out.println("out1_script : "+bytesToHex(out1_script.encode()));
+        // System.out.println("out1_script : "+bytesToHex(out1_script.encode()));
 
         byte[] out2_pkb_hash = PublicKey.toPublicKey(W1.publicKey).encode(true, true);
         ArrayList<Object> t2 = new ArrayList<Object>();
@@ -260,10 +285,10 @@ public class CLI {
         t2.add(172);
         temp2.add(t2);
         Script out2_script = new Script(temp2);
-        System.out.println("out2_script : "+bytesToHex(out2_script.encode()));
+        // System.out.println("out2_script : "+bytesToHex(out2_script.encode()));
         
-        TxOut tx_out1 = new TxOut(1000, out1_script);
-        TxOut tx_out2 = new TxOut(850, out2_script);
+        TxOut tx_out1 = new TxOut((int)amt, out1_script);
+        TxOut tx_out2 = new TxOut((int)(amt-fee), out2_script);
 
         ArrayList<TxOut> out_scripts = new ArrayList<TxOut>();
         out_scripts.add(tx_out1);
@@ -294,8 +319,8 @@ public class CLI {
         temp3.add(t3);
 
         Script source_script = new Script(temp3);
-        System.out.println("recall out2_pkb_hash is just raw bytes of the hash of public_key: "+bytesToHex(out2_pkb_hash));
-        System.out.println("source_script : "+bytesToHex(source_script.encode()));
+        // System.out.println("recall out2_pkb_hash is just raw bytes of the hash of public_key: "+bytesToHex(out2_pkb_hash));
+        // System.out.println("source_script : "+bytesToHex(source_script.encode()));
 
         tx_in.setPrevScript(source_script);
 
@@ -340,9 +365,12 @@ public class CLI {
         W1.txBroadcast(bytesToHex(tx.encode(-1)));
 
         System.out.println("-------------------------------------------------------------------\n");
-        System.out.println("id : "+tx.id());
+        System.out.println(ANSI_GREEN+"Transaction ID : "+ANSI_GREEN_BACKGROUND+tx.id()+ANSI_RESET);
+        
+        System.out.println("\n"+ANSI_GREEN+"Please wait while we process your transaction"+ANSI_GREEN_BACKGROUND+tx.id()+ANSI_RESET);
+        Thread.sleep(120000);
 
-
-  
+        System.out.println("Transaction Details : \n");
+        W1.txDetails(tx.id());
     }
 }
