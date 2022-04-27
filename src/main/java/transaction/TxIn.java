@@ -13,7 +13,7 @@ class TxIn_helper extends helper{
         BigInteger bigInt = BigInteger.valueOf(sequence);      
         byte[] s = bigInt.toByteArray();
         byte[] out = new byte[nbytes];
-        reverse(s);
+        s = reverse(s);
         if(encoding == "little"){
             for(int ind=0; ind<nbytes; ind++){
                 if(ind<s.length){
@@ -57,7 +57,7 @@ class TxIn_helper extends helper{
             s[idx++] = s1[i];
         }
         byte[] out = new byte[nbytes];
-        reverse(s);
+        s = reverse(s);
         if(encoding == "little"){
             for(int ind=0; ind<nbytes; ind++){
                 if(ind<s.length){

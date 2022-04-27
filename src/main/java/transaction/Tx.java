@@ -2,7 +2,6 @@ package transaction;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.nio.*;
 import java.util.*;
 
 import hashing.Sha;
@@ -131,7 +130,7 @@ public class Tx {
         // System.out.println("in id tx_encode : "+Tx_helper.bytesToHex(tx_encode));
         byte[] res = sha.sha256(sha.sha256(this.encode(-1)));
 
-        return TxIn_helper.bytesToHex(Tx_helper.reverse(res));
+        return Tx_helper.bytesToHex(Tx_helper.reverse(res));
     }
 
     public byte[] encode(int sig_index) throws Exception{

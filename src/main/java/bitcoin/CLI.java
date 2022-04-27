@@ -218,7 +218,7 @@ public class CLI {
 
         Thread.sleep(120000);
 
-        System.out.println("\nPlease confirm that bitcoins have been deposited to Wallet 1 ("+ANSI_PURPLE+W1.addr+ANSI_RESET+") by pressing typing CONFIRM below.");
+        System.out.println("\nPlease confirm that bitcoins have been deposited to Wallet 1 ("+ANSI_PURPLE+W1.addr+ANSI_RESET+") by typing CONFIRM below.");
         sc.next();
         
         System.out.println("Wallet Balances : \n");
@@ -365,10 +365,13 @@ public class CLI {
         W1.txBroadcast(bytesToHex(tx.encode(-1)));
 
         System.out.println("-------------------------------------------------------------------\n");
-        System.out.println(ANSI_GREEN+"Transaction ID : "+ANSI_GREEN_BACKGROUND+tx.id()+ANSI_RESET);
+        System.out.println(ANSI_GREEN+"Transaction ID : "+ANSI_RESET+ANSI_GREEN_BACKGROUND+tx.id()+ANSI_RESET);
         
-        System.out.println("\n"+ANSI_GREEN+"Please wait while we process your transaction"+ANSI_GREEN_BACKGROUND+tx.id()+ANSI_RESET);
+        System.out.println("\n"+ANSI_GREEN+"Please wait while we process your transaction"+ANSI_RESET+ANSI_GREEN_BACKGROUND+tx.id()+ANSI_RESET);
         Thread.sleep(120000);
+
+        System.out.println("\nPlease confirm that transaction has been confirmed by the blockchain by typing CONFIRM below.");
+        sc.next();
 
         System.out.println("Transaction Details : \n");
         W1.txDetails(tx.id());
