@@ -150,7 +150,7 @@ public class BTC{
     // System.out.println("Time Taken to Generate : "+duration/1000000+" ms");
     // System.out.println("-------------------------------------------------------------------\n");
 
-    BigInteger transaction_id = new BigInteger("90983ca2f32f9bc2622c9a9540708d92ec1eff035b7cbf4624f225010e89cb7f", 16);
+    BigInteger transaction_id = new BigInteger("9429c2c9f5a314677efea1a20755dff707acce8ffcd6f7e4449cfa8bcf619f3e", 16);
 
     TxIn tx_in = new TxIn(transaction_id.toByteArray(), 1, null, "test");
     
@@ -200,8 +200,8 @@ public class BTC{
     Script out2_script = new Script(temp2);
     System.out.println("out2_script : "+bytesToHex(out2_script.encode()));
     
-    TxOut tx_out1 = new TxOut(1000, out1_script);
-    TxOut tx_out2 = new TxOut(850, out2_script);
+    TxOut tx_out1 = new TxOut(100, out1_script);
+    TxOut tx_out2 = new TxOut(70, out2_script);
 
     ArrayList<TxOut> out_scripts = new ArrayList<TxOut>();
     out_scripts.add(tx_out1);
@@ -294,8 +294,8 @@ public class BTC{
 
 
 
-
-
+//our: 01000000013e9f61cf8bfa9c44e4f7d6fc8fceac07f7df5507a2a1fe7e6714a3f5c9c22994010000006b483045022100c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee502202c9af62853ec8780337dc77f0057bd2c6f0ab98d9f3d14b6e9c03d08dda9449a01210279e6b76607411d0b60ea4a572b4ed9f71b00c1bd92bd49a199717348b1d9dd2fffffffff0264000000000000001976a914deff48f7ea4eed464725fa22fdf637bb69a0c6b588ac46000000000000001976a91478d0db67fef5e266ff056cce57fb2786745f7f3188ac00000000
+//exp: 01000000013e9f61cf8bfa9c44e4f7d6fc8fceac07f7df5507a2a1fe7e6714a3f5c9c22994010000006b483045022100c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee502202c9af62853ec8780337dc77f0057bd2c6f0ab98d9f3d14b6e9c03d08dda9449a01210279e6b76607411d0b60ea4a572b4ed9f71b00c1bd92bd49a199717348b1d9dd2fffffffff0264000000000000001976a914deff48f7ea4eed464725fa22fdf637bb69a0c6b588ac46000000000000001976a91478d0db67fef5e266ff056cce57fb2786745f7f3188ac00000000
 
 
 
