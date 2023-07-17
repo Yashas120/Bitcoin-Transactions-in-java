@@ -383,7 +383,3 @@ To execute the bitcoin code, execute the following command in terminal
 ```bash
 java -jar target/bitcoin-0.1.0.jar
 ```
-
-## Acknowledgement
-
-Special thanks to T Vijay Prashant and Yashas KS for helping complete this project.
